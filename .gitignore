@@ -38,4 +38,4 @@ build/
 ### Mac OS ###
 .DS_Store
 
-### TODO Remember to ignore sensitive files (properties files etc)
+#TODO: Remember to ignore sensitive files (properties files etc)
