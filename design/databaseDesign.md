@@ -6,14 +6,13 @@ User (AWS Cognito user data stored locally)
 ├── cognito_id (PK, VARCHAR)
 ├── email (VARCHAR)
 ├── username (VARCHAR)
-├── created_at (TIMESTAMP)
+
 
 Source (Recommendation source tags)
 ├── id (PK, INT AUTO_INCREMENT)
 ├── user_id (FK → User.cognito_id)
 ├── name (VARCHAR) - e.g., "Sarah", "NYT Podcast", "Instagram"
-├── color (VARCHAR) - hex color for UI badges
-├── created_at (TIMESTAMP)
+
 
 Recommendation
 ├── id (PK, INT AUTO_INCREMENT)
@@ -22,8 +21,7 @@ Recommendation
 ├── media_id (FK → Media.id, nullable for manual entries)
 ├── notes (TEXT)
 ├── is_watched (BOOLEAN, default false)
-├── created_at (TIMESTAMP)
-├── updated_at (TIMESTAMP)
+
 
 Media (TMDB data cached locally)
 ├── id (PK, INT AUTO_INCREMENT)
@@ -34,7 +32,7 @@ Media (TMDB data cached locally)
 ├── poster_path (VARCHAR) - relative path from TMDB
 ├── overview (TEXT)
 ├── genres (VARCHAR) - comma-separated or JSON
-├── created_at (TIMESTAMP)
+
 ```
 
 ### Relationships (All One-to-Many)
