@@ -38,4 +38,11 @@ build/
 ### Mac OS ###
 .DS_Store
 
+
+#Database config files
+database.properties
+
+# Hibernate config
+hibernate.cfg.xml
+
 #TODO: Remember to ignore sensitive files (properties files etc)
