@@ -1,15 +1,29 @@
 package com.aozelce.entity;
 
+import jakarta.persistence.*;
+import org.hibernate.annotations.GenericGenerator;
+
 /**
  * The type User.
  *
  * @author aozelce
  */
+@Entity
+@Table (name = "user")
 public class User {
 
+    @Id
+    @GeneratedValue(strategy= GenerationType.AUTO, generator="native")
+    @GenericGenerator(name = "native",strategy = "native")
+    private int id;
 
-    private String id;
+    @Column (name = "cognito_id")
+    private String cognitoId;
+
+    @Column (name = "email")
     private String email;
+
+    @Column (name = "username")
     private String username;
 
 
@@ -22,22 +36,21 @@ public class User {
     /**
      * Instantiates a new User.
      *
-     * @param id       the id
      * @param email    the email
      * @param username the username
      */
-    public User(String id, String email, String username) {
-        this.id = id;
+    public User( String email, String username) {
+
         this.email = email;
         this.username = username;
-    }
+   }
 
     /**
      * Gets id.
      *
      * @return the id
      */
-    public String getId() {
+    public int getId() {
         return id;
     }
 
@@ -46,8 +59,26 @@ public class User {
      *
      * @param id the id
      */
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
+    }
+
+    /**
+     * Gets cognito id.
+     *
+     * @return the cognito id
+     */
+    public String getCognitoId() {
+        return cognitoId;
+    }
+
+    /**
+     * Sets cognito id.
+     *
+     * @param cognitoId the cognito id
+     */
+    public void setCognitoId(String cognitoId) {
+        this.cognitoId = cognitoId;
     }
 
     /**
@@ -86,11 +117,11 @@ public class User {
         this.username = username;
     }
 
-
     @Override
     public String toString() {
         return "User{" +
-                "id='" + id + '\'' +
+                "id=" + id +
+                ", cognitoId='" + cognitoId + '\'' +
                 ", email='" + email + '\'' +
                 ", username='" + username + '\'' +
                 '}';
