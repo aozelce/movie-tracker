@@ -7,6 +7,8 @@ import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class UserDaoTest {
@@ -61,18 +63,30 @@ class UserDaoTest {
 
     @Test
     void delete() {
-
+        userDao = new UserDao();
+        userDao.delete(userDao.getUserById(2));
+        assertNull(userDao.getUserById(2));
     }
 
     @Test
     void getAll() {
+        userDao = new UserDao();
+        List<User> users = userDao.getAll();
+        assertEquals(6, users.size());
     }
 
     @Test
     void getByPropertyEqual() {
+        userDao = new UserDao();
+        List<User> users = userDao.getByPropertyEqual("username", "mike");
+        assertEquals(1, users.size());
+        assertEquals(5, users.get(0).getId());
     }
 
     @Test
     void getByPropertyLike() {
+        userDao = new UserDao();
+        List<User> users = userDao.getByPropertyLike("username", "m");
+        assertEquals(3, users.size());
     }
 }
