@@ -11,12 +11,24 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * The type User dao test.
+ */
 class UserDaoTest {
 
+    /**
+     * The User dao.
+     */
     UserDao userDao = new UserDao();
 
+    /**
+     * The Logger.
+     */
     Logger logger = LogManager.getLogger(this.getClass());
 
+    /**
+     * Sets up.
+     */
     @BeforeEach
     void setUp() {
         logger.info("Running setUp method - resetting database");
@@ -25,6 +37,9 @@ class UserDaoTest {
         logger.info("setUp method completed");
     }
 
+    /**
+     * Gets user by id success.
+     */
     @Test
     void getUserByIdSuccess() {
         userDao = new UserDao();
@@ -34,6 +49,9 @@ class UserDaoTest {
 
     }
 
+    /**
+     * Update success.
+     */
     @Test
     void updateSuccess() {
         userDao = new UserDao();
@@ -49,6 +67,9 @@ class UserDaoTest {
 
     }
 
+    /**
+     * Insert success.
+     */
     @Test
     void insertSuccess() {
         UserDao userDao = new UserDao();
@@ -61,6 +82,9 @@ class UserDaoTest {
 
     }
 
+    /**
+     * Delete.
+     */
     @Test
     void delete() {
         userDao = new UserDao();
@@ -68,6 +92,9 @@ class UserDaoTest {
         assertNull(userDao.getUserById(2));
     }
 
+    /**
+     * Gets all.
+     */
     @Test
     void getAll() {
         userDao = new UserDao();
@@ -75,6 +102,9 @@ class UserDaoTest {
         assertEquals(6, users.size());
     }
 
+    /**
+     * Gets by property equal.
+     */
     @Test
     void getByPropertyEqual() {
         userDao = new UserDao();
@@ -83,6 +113,9 @@ class UserDaoTest {
         assertEquals(5, users.get(0).getId());
     }
 
+    /**
+     * Gets by property like.
+     */
     @Test
     void getByPropertyLike() {
         userDao = new UserDao();

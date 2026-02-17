@@ -1,19 +1,40 @@
 package com.aozelce.entity;
 
+import jakarta.persistence.*;
+
 /**
  * The type Media.
  *
  * @author aozelce
  */
+@Entity
+@Table(name = "media")
 public class Media {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private int id;
+
+    @Column(name = "tmdb_id")
     private int tmdbId;
-    private  String title;
+
+    @Column(name = "title")
+    private String title;
+
+    @Column(name = "media_type")
     private String mediaType;
+
+    @Column(name = "year")
     private int year;
+
+    @Column(name = "poster_path")
     private String posterPath;
+
+    @Column(name = "overview", columnDefinition = "TEXT")
     private String overview;
+
+    @Column(name = "genres")
     private String genres;
 
 
