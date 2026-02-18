@@ -23,17 +23,17 @@ DROP TABLE IF EXISTS `media`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `media` (
-                         `id` int NOT NULL AUTO_INCREMENT,
-                         `tmdb_id` int NOT NULL,
-                         `title` varchar(255) NOT NULL,
-                         `media_type` varchar(10) NOT NULL,
-                         `year` int DEFAULT NULL,
-                         `poster_path` varchar(500) DEFAULT NULL,
-                         `overview` text,
-                         `genres` varchar(255) DEFAULT NULL,
-                         PRIMARY KEY (`id`),
-                         UNIQUE KEY `tmdb_id` (`tmdb_id`),
-                         KEY `idx_tmdb_id` (`tmdb_id`)
+  `id` int NOT NULL AUTO_INCREMENT,
+  `tmdb_id` int NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `media_type` varchar(10) NOT NULL,
+  `year` int DEFAULT NULL,
+  `poster_path` varchar(500) DEFAULT NULL,
+  `overview` text,
+  `genres` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `tmdb_id` (`tmdb_id`),
+  KEY `idx_tmdb_id` (`tmdb_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -55,19 +55,19 @@ DROP TABLE IF EXISTS `recommendation`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `recommendation` (
-                                  `id` int NOT NULL AUTO_INCREMENT,
-                                  `user_id` int NOT NULL,
-                                  `source_id` int DEFAULT NULL,
-                                  `media_id` int DEFAULT NULL,
-                                  `notes` text,
-                                  `is_watched` tinyint(1) DEFAULT '0',
-                                  PRIMARY KEY (`id`),
-                                  KEY `source_id` (`source_id`),
-                                  KEY `media_id` (`media_id`),
-                                  KEY `idx_user_id` (`user_id`),
-                                  CONSTRAINT `recommendation_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE,
-                                  CONSTRAINT `recommendation_ibfk_2` FOREIGN KEY (`source_id`) REFERENCES `source` (`id`) ON DELETE SET NULL,
-                                  CONSTRAINT `recommendation_ibfk_3` FOREIGN KEY (`media_id`) REFERENCES `media` (`id`) ON DELETE SET NULL
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `source_id` int DEFAULT NULL,
+  `media_id` int DEFAULT NULL,
+  `notes` text,
+  `is_watched` tinyint(1) DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `source_id` (`source_id`),
+  KEY `media_id` (`media_id`),
+  KEY `idx_user_id` (`user_id`),
+  CONSTRAINT `recommendation_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `recommendation_ibfk_2` FOREIGN KEY (`source_id`) REFERENCES `source` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `recommendation_ibfk_3` FOREIGN KEY (`media_id`) REFERENCES `media` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -89,12 +89,12 @@ DROP TABLE IF EXISTS `source`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `source` (
-                          `id` int NOT NULL AUTO_INCREMENT,
-                          `user_id` int NOT NULL,
-                          `name` varchar(100) NOT NULL,
-                          PRIMARY KEY (`id`),
-                          UNIQUE KEY `unique_user_source` (`user_id`,`name`),
-                          CONSTRAINT `source_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `name` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_user_source` (`user_id`,`name`),
+  CONSTRAINT `source_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -116,12 +116,12 @@ DROP TABLE IF EXISTS `user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user` (
-                        `id` int NOT NULL AUTO_INCREMENT,
-                        `cognito_id` varchar(255) DEFAULT NULL,
-                        `email` varchar(255) NOT NULL,
-                        `username` varchar(100) NOT NULL,
-                        PRIMARY KEY (`id`),
-                        UNIQUE KEY `email` (`email`)
+  `id` int NOT NULL AUTO_INCREMENT,
+  `cognito_id` varchar(255) DEFAULT NULL,
+  `email` varchar(255) NOT NULL,
+  `username` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

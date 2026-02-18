@@ -8,6 +8,7 @@
     <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/eaea00d7-0057-49d8-bd55-16c0de332a00/console_4.sql" value="eaea00d7-0057-49d8-bd55-16c0de332a00" />
     <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/eaea00d7-0057-49d8-bd55-16c0de332a00/console_5.sql" value="eaea00d7-0057-49d8-bd55-16c0de332a00" />
     <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/eaea00d7-0057-49d8-bd55-16c0de332a00/console_6.sql" value="eaea00d7-0057-49d8-bd55-16c0de332a00" />
+    <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/eaea00d7-0057-49d8-bd55-16c0de332a00/console_7.sql" value="eaea00d7-0057-49d8-bd55-16c0de332a00" />
     <file url="file://$PROJECT_DIR$/src/test/resources/cleanDB.sql" value="eaea00d7-0057-49d8-bd55-16c0de332a00" />
   </component>
 </project>

@@ -1,14 +1,25 @@
 package com.aozelce.entity;
 
+import jakarta.persistence.*;
+
 /**
  * The type Source.
  *
  * @author aozelce
  */
+@Entity
+@Table(name = "source")
 public class Source {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private int id;
-    private String userId;
+
+    @Column(name = "user_id")
+    private int userId;
+
+    @Column(name = "name")
     private String name;
 
     /**
@@ -24,7 +35,7 @@ public class Source {
      * @param userId the user id
      * @param name   the name
      */
-    public Source(int id, String userId, String name) {
+    public Source(int id, int userId, String name) {
         this.id = id;
         this.userId = userId;
         this.name = name;
@@ -53,7 +64,7 @@ public class Source {
      *
      * @return the user id
      */
-    public String getUserId() {
+    public int getUserId() {
         return userId;
     }
 
@@ -62,7 +73,7 @@ public class Source {
      *
      * @param userId the user id
      */
-    public void setUserId(String userId) {
+    public void setUserId(int userId) {
         this.userId = userId;
     }
 
@@ -87,8 +98,8 @@ public class Source {
     @Override
     public String toString() {
         return "Source{" +
-                "id='" + id + '\'' +
-                ", userId='" + userId + '\'' +
+                "id=" + id +
+                ", userId=" + userId +
                 ", name='" + name + '\'' +
                 '}';
     }

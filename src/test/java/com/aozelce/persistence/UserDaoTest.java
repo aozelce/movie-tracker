@@ -38,7 +38,11 @@ class UserDaoTest {
     }
 
     /**
-     * Gets user by id success.
+     * Tests the successful retrieval of a user by their ID using the UserDao class.
+     * - Creates an instance of the UserDao class.
+     * - Calls the getUserById method with a valid user ID.
+     * - Asserts that the retrieved user object is not null.
+     * - Asserts that the username of the retrieved user matches the expected value.
      */
     @Test
     void getUserByIdSuccess() {
@@ -50,7 +54,12 @@ class UserDaoTest {
     }
 
     /**
-     * Update success.
+     * Tests the successful update of a user's data in the database.
+     * - Retrieves a user by ID using the UserDao class.
+     * - Updates the user's username.
+     * - Saves the updated user back to the database.
+     * - Retrieves the user again by ID to confirm the username was updated.
+     * - Asserts that the updated username matches the expected value
      */
     @Test
     void updateSuccess() {
@@ -68,7 +77,14 @@ class UserDaoTest {
     }
 
     /**
-     * Insert success.
+     * Tests the successful insertion of a new user into the database.
+     * - Creates a new instance of the UserDao class.
+     * - Instantiates a new User object with specific details (email and username).
+     * - Calls the `insert` method of the UserDao class to persist the User object.
+     * - Retrieves the User object from the database using its generated ID.
+     * - Asserts that the retrieved User object is not null.
+     * - Asserts that the username of the retrieved User matches the expected username.
+     * - Asserts that the generated ID of the User is not the default value (0).
      */
     @Test
     void insertSuccess() {
@@ -83,7 +99,7 @@ class UserDaoTest {
     }
 
     /**
-     * Delete.
+     * Tests the deletion of a user from the database.
      */
     @Test
     void delete() {
@@ -93,7 +109,11 @@ class UserDaoTest {
     }
 
     /**
-     * Gets all.
+     * Tests the retrieval of all users from the database.
+     * - Instantiates the UserDao class.
+     * - Calls the `getAll` method to retrieve the list of all users.
+     * - Asserts that the size of the retrieved user list matches the expected value.
+
      */
     @Test
     void getAll() {
@@ -103,7 +123,11 @@ class UserDaoTest {
     }
 
     /**
-     * Gets by property equal.
+     * Tests the retrieval of users by a specified property and value using the `getByPropertyEqual` method of the UserDao class.
+     * - Instantiates the UserDao class.
+     * - Calls the `getByPropertyEqual` method with a property name and a corresponding value.
+     * - Asserts that the size of the retrieved user list matches the expected value.
+     * - Asserts that the retrieved user has the expected properties, such as ID.
      */
     @Test
     void getByPropertyEqual() {
@@ -114,7 +138,11 @@ class UserDaoTest {
     }
 
     /**
-     * Gets by property like.
+     * Tests the retrieval of users by a property with a partial matching value using the `getByPropertyLike` method of the `UserDao` class.
+     * It performs the following steps:
+     * - Instantiates the `UserDao` class.
+     * - Calls the `getByPropertyLike` method with a specific property name (`"username"`) and a partial value (`"m"`).
+     * - Asserts that the size of the returned user list matches the expected size.
      */
     @Test
     void getByPropertyLike() {

@@ -1,19 +1,35 @@
 package com.aozelce.entity;
 
+import jakarta.persistence.*;
+
 /**
  * The type Recommendation.
  *
  * @author aozelce
  */
+@Entity
+@Table(name = "recommendation")
 public class Recommendation {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private int id;
-    private String userId;
-    private String sourceId;
-    private String mediaId;
-    private String notes;
-    private boolean isWatched;
 
+    @Column(name = "user_id")
+    private int userId;
+
+    @Column(name = "source_id")
+    private int sourceId;
+
+    @Column(name = "media_id")
+    private int mediaId;
+
+    @Column(name = "notes", columnDefinition = "TEXT")
+    private String notes;
+
+    @Column(name = "is_watched")
+    private boolean isWatched;
 
     /**
      * Instantiates a new Recommendation.
@@ -31,7 +47,7 @@ public class Recommendation {
      * @param notes     the notes
      * @param isWatched the is watched
      */
-    public Recommendation(int id, String userId, String sourceId, String mediaId, String notes, boolean isWatched) {
+    public Recommendation(int id, int userId, int sourceId, int mediaId, String notes, boolean isWatched) {
         this.id = id;
         this.userId = userId;
         this.sourceId = sourceId;
@@ -63,7 +79,7 @@ public class Recommendation {
      *
      * @return the user id
      */
-    public String getUserId() {
+    public int getUserId() {
         return userId;
     }
 
@@ -72,7 +88,7 @@ public class Recommendation {
      *
      * @param userId the user id
      */
-    public void setUserId(String userId) {
+    public void setUserId(int userId) {
         this.userId = userId;
     }
 
@@ -81,7 +97,7 @@ public class Recommendation {
      *
      * @return the source id
      */
-    public String getSourceId() {
+    public int getSourceId() {
         return sourceId;
     }
 
@@ -90,7 +106,7 @@ public class Recommendation {
      *
      * @param sourceId the source id
      */
-    public void setSourceId(String sourceId) {
+    public void setSourceId(int sourceId) {
         this.sourceId = sourceId;
     }
 
@@ -99,7 +115,7 @@ public class Recommendation {
      *
      * @return the media id
      */
-    public String getMediaId() {
+    public int getMediaId() {
         return mediaId;
     }
 
@@ -108,7 +124,7 @@ public class Recommendation {
      *
      * @param mediaId the media id
      */
-    public void setMediaId(String mediaId) {
+    public void setMediaId(int mediaId) {
         this.mediaId = mediaId;
     }
 
@@ -152,9 +168,9 @@ public class Recommendation {
     public String toString() {
         return "Recommendation{" +
                 "id=" + id +
-                ", userId='" + userId + '\'' +
-                ", sourceId='" + sourceId + '\'' +
-                ", mediaId='" + mediaId + '\'' +
+                ", userId=" + userId +
+                ", sourceId=" + sourceId +
+                ", mediaId=" + mediaId +
                 ", notes='" + notes + '\'' +
                 ", isWatched=" + isWatched +
                 '}';
