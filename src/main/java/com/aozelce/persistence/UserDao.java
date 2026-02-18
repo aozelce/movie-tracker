@@ -63,7 +63,7 @@ public class UserDao {
         session.persist(user);
         transaction.commit();
         id = user.getId();
-        System.out.println("Inserted user with ID: " + id);
+        logger.info("Inserted user with ID: {}", id);
         session.close();
         return id;
     }

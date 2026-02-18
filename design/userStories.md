@@ -32,3 +32,6 @@ As a user, I want to delete recommendations I'm no longer interested in so that 
 **US-010: Edit Recommendation**
 As a user, I want to edit the notes and source tag of a saved recommendation so that I can keep information current.
 
+**US-011: User Logout**
+As a logged-in user, I want to log out of my account so that I can ensure my information is secure when I'm done using the app.
+
