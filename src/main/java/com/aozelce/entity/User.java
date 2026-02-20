@@ -3,6 +3,9 @@ package com.aozelce.entity;
 import jakarta.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * The type User.
  *
@@ -25,6 +28,12 @@ public class User {
 
     @Column (name = "username")
     private String username;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<Recommendation> recommendations = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<Source> sources = new ArrayList<>();
 
 
     /**
@@ -115,6 +124,42 @@ public class User {
      */
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    /**
+     * Gets recommendations.
+     *
+     * @return the recommendations
+     */
+    public List<Recommendation> getRecommendations() {
+        return recommendations;
+    }
+
+    /**
+     * Sets recommendations.
+     *
+     * @param recommendations the recommendations
+     */
+    public void setRecommendations(List<Recommendation> recommendations) {
+        this.recommendations = recommendations;
+    }
+
+    /**
+     * Gets sources.
+     *
+     * @return the sources
+     */
+    public List<Source> getSources() {
+        return sources;
+    }
+
+    /**
+     * Sets sources.
+     *
+     * @param sources the sources
+     */
+    public void setSources(List<Source> sources) {
+        this.sources = sources;
     }
 
     @Override

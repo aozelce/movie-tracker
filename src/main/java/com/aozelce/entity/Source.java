@@ -16,8 +16,9 @@ public class Source {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "user_id")
-    private int userId;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @Column(name = "name")
     private String name;
@@ -31,13 +32,13 @@ public class Source {
     /**
      * Instantiates a new Source.
      *
-     * @param id     the id
-     * @param userId the user id
-     * @param name   the name
+     * @param id   the id
+     * @param user the user
+     * @param name the name
      */
-    public Source(int id, int userId, String name) {
+    public Source(int id, User user, String name) {
         this.id = id;
-        this.userId = userId;
+        this.user = user;
         this.name = name;
     }
 
@@ -60,21 +61,21 @@ public class Source {
     }
 
     /**
-     * Gets user id.
+     * Gets user.
      *
-     * @return the user id
+     * @return the user
      */
-    public int getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
     /**
-     * Sets user id.
+     * Sets user.
      *
-     * @param userId the user id
+     * @param user the user
      */
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     /**
@@ -99,7 +100,7 @@ public class Source {
     public String toString() {
         return "Source{" +
                 "id=" + id +
-                ", userId=" + userId +
+                ", user=" + user.getId() +
                 ", name='" + name + '\'' +
                 '}';
     }

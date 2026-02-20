@@ -16,14 +16,17 @@ public class Recommendation {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "user_id")
-    private int userId;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-    @Column(name = "source_id")
-    private int sourceId;
+    @ManyToOne
+    @JoinColumn(name = "source_id", nullable = false)
+    private Source source;
 
-    @Column(name = "media_id")
-    private int mediaId;
+    @ManyToOne
+    @JoinColumn(name = "media_id", nullable = false)
+    private Media media;
 
     @Column(name = "notes", columnDefinition = "TEXT")
     private String notes;
@@ -40,18 +43,16 @@ public class Recommendation {
     /**
      * Instantiates a new Recommendation.
      *
-     * @param id        the id
-     * @param userId    the user id
-     * @param sourceId  the source id
-     * @param mediaId   the media id
+     * @param user      the user
+     * @param source    the source
+     * @param media     the media
      * @param notes     the notes
      * @param isWatched the is watched
      */
-    public Recommendation(int id, int userId, int sourceId, int mediaId, String notes, boolean isWatched) {
-        this.id = id;
-        this.userId = userId;
-        this.sourceId = sourceId;
-        this.mediaId = mediaId;
+    public Recommendation(User user, Source source, Media media, String notes, boolean isWatched) {
+        this.user = user;
+        this.source = source;
+        this.media = media;
         this.notes = notes;
         this.isWatched = isWatched;
     }
@@ -75,57 +76,57 @@ public class Recommendation {
     }
 
     /**
-     * Gets user id.
+     * Gets user.
      *
-     * @return the user id
+     * @return the user
      */
-    public int getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
     /**
-     * Sets user id.
+     * Sets user.
      *
-     * @param userId the user id
+     * @param user the user
      */
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     /**
-     * Gets source id.
+     * Gets source.
      *
-     * @return the source id
+     * @return the source
      */
-    public int getSourceId() {
-        return sourceId;
+    public Source getSource() {
+        return source;
     }
 
     /**
-     * Sets source id.
+     * Sets source.
      *
-     * @param sourceId the source id
+     * @param source the source
      */
-    public void setSourceId(int sourceId) {
-        this.sourceId = sourceId;
+    public void setSource(Source source) {
+        this.source = source;
     }
 
     /**
-     * Gets media id.
+     * Gets media.
      *
-     * @return the media id
+     * @return the media
      */
-    public int getMediaId() {
-        return mediaId;
+    public Media getMedia() {
+        return media;
     }
 
     /**
-     * Sets media id.
+     * Sets media.
      *
-     * @param mediaId the media id
+     * @param media the media
      */
-    public void setMediaId(int mediaId) {
-        this.mediaId = mediaId;
+    public void setMedia(Media media) {
+        this.media = media;
     }
 
     /**
@@ -164,13 +165,15 @@ public class Recommendation {
         isWatched = watched;
     }
 
+
+
     @Override
     public String toString() {
         return "Recommendation{" +
                 "id=" + id +
-                ", userId=" + userId +
-                ", sourceId=" + sourceId +
-                ", mediaId=" + mediaId +
+                ", user=" + user +
+                ", source=" + source +
+                ", media=" + media +
                 ", notes='" + notes + '\'' +
                 ", isWatched=" + isWatched +
                 '}';

@@ -1,6 +1,9 @@
 package com.aozelce.persistence;
 
+import com.aozelce.entity.Media;
 import com.aozelce.entity.Recommendation;
+import com.aozelce.entity.Source;
+import com.aozelce.entity.User;
 import com.aozelce.util.Database;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class RecommendationDaoTest {
 
-    RecommendationDao recommendationDao = new RecommendationDao();
+    RecommendationDao recommendationDao;
 
     Logger logger = LogManager.getLogger(this.getClass());
 
@@ -29,6 +32,8 @@ class RecommendationDaoTest {
         Database database = Database.getInstance();
         database.runSQL("cleanDB.sql");
         logger.info("setUp method completed");
+        recommendationDao = new RecommendationDao();
+
     }
 
     /**
@@ -39,9 +44,9 @@ class RecommendationDaoTest {
         recommendationDao = new RecommendationDao();
         Recommendation retrieved = recommendationDao.getRecommendationById(1);
         assertNotNull(retrieved);
-        assertEquals(2, retrieved.getUserId());
-        assertEquals(1, retrieved.getSourceId());
-        assertEquals(1, retrieved.getMediaId());
+        assertEquals("john_doe", retrieved.getUser().getUsername());
+        assertEquals("Sarah", retrieved.getSource().getName());
+        assertEquals("The Bear", retrieved.getMedia().getTitle());
         assertEquals("Sarah said best show of 2023!", retrieved.getNotes());
         assertFalse(retrieved.isWatched());
     }
@@ -65,14 +70,36 @@ class RecommendationDaoTest {
      */
     @Test
     void insertSuccess() {
+
         recommendationDao = new RecommendationDao();
-        Recommendation newRec = new Recommendation(0, 2, 1, 1, "New recommendation", false);
+
+        // fetch the real objects first
+        UserDao userDao = new UserDao();
+        SourceDao sourceDao = new SourceDao();
+        MediaDao mediaDao = new MediaDao();
+
+        User user = userDao.getUserById(2);
+        Source source = sourceDao.getSourceById(1);
+        Media media = mediaDao.getMediaById(1);
+
+        Recommendation newRec = new Recommendation();
+        newRec.setUser(user);
+        newRec.setSource(source);
+        newRec.setMedia(media);
+        newRec.setNotes("New recommendation");
+        newRec.setWatched(false);
+
         int newId = recommendationDao.insert(newRec);
+
         Recommendation retrieved = recommendationDao.getRecommendationById(newId);
         assertNotNull(retrieved);
-        assertEquals("New recommendation", retrieved.getNotes());
         assertNotEquals(0, newId);
+        assertEquals("New recommendation", retrieved.getNotes());
+        assertEquals("john_doe", retrieved.getUser().getUsername());
+        assertEquals("Sarah", retrieved.getSource().getName());
+        assertEquals("The Bear", retrieved.getMedia().getTitle());
     }
+
 
     /**
      * Delete.
