@@ -5,6 +5,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * The type User.
@@ -162,6 +163,26 @@ public class User {
         this.sources = sources;
     }
 
+
+    /**
+     * Adds recommendation.
+     *
+     * @param recommendation the recommendation
+     */
+    public void addRecommendation(Recommendation recommendation) {
+        recommendations.add(recommendation);
+        recommendation.setUser(this);
+    }
+
+    /**
+     * Adds source.
+     * @param source the source
+     */
+    public void addSource(Source source) {
+        sources.add(source);
+        source.setUser(this);
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -170,5 +191,17 @@ public class User {
                 ", email='" + email + '\'' +
                 ", username='" + username + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return getId() == user.getId() && Objects.equals(getCognitoId(), user.getCognitoId()) && Objects.equals(getEmail(), user.getEmail()) && Objects.equals(getUsername(), user.getUsername());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getCognitoId(), getEmail(), getUsername());
     }
 }
