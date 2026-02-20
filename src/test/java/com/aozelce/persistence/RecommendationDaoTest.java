@@ -19,8 +19,14 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class RecommendationDaoTest {
 
+    /**
+     * The Recommendation dao.
+     */
     RecommendationDao recommendationDao;
 
+    /**
+     * The Logger.
+     */
     Logger logger = LogManager.getLogger(this.getClass());
 
     /**
@@ -31,8 +37,8 @@ class RecommendationDaoTest {
         logger.info("Running setUp method - resetting database");
         Database database = Database.getInstance();
         database.runSQL("cleanDB.sql");
-        logger.info("setUp method completed");
         recommendationDao = new RecommendationDao();
+        logger.info("setUp method completed");
 
     }
 
@@ -41,7 +47,7 @@ class RecommendationDaoTest {
      */
     @Test
     void getRecommendationByIdSuccess() {
-        recommendationDao = new RecommendationDao();
+
         Recommendation retrieved = recommendationDao.getRecommendationById(1);
         assertNotNull(retrieved);
         assertEquals("john_doe", retrieved.getUser().getUsername());
@@ -56,7 +62,7 @@ class RecommendationDaoTest {
      */
     @Test
     void updateSuccess() {
-        recommendationDao = new RecommendationDao();
+
         Recommendation toUpdate = recommendationDao.getRecommendationById(1);
         toUpdate.setNotes("Updated notes");
         recommendationDao.saveRecommendation(toUpdate);
@@ -70,8 +76,6 @@ class RecommendationDaoTest {
      */
     @Test
     void insertSuccess() {
-
-        recommendationDao = new RecommendationDao();
 
         // fetch the real objects first
         UserDao userDao = new UserDao();
@@ -89,11 +93,11 @@ class RecommendationDaoTest {
         newRec.setNotes("New recommendation");
         newRec.setWatched(false);
 
-        int newId = recommendationDao.insert(newRec);
+        int newRecommendationId = recommendationDao.insert(newRec);
 
-        Recommendation retrieved = recommendationDao.getRecommendationById(newId);
+        Recommendation retrieved = recommendationDao.getRecommendationById(newRecommendationId);
         assertNotNull(retrieved);
-        assertNotEquals(0, newId);
+        assertNotEquals(0, newRecommendationId);
         assertEquals("New recommendation", retrieved.getNotes());
         assertEquals("john_doe", retrieved.getUser().getUsername());
         assertEquals("Sarah", retrieved.getSource().getName());
@@ -106,7 +110,6 @@ class RecommendationDaoTest {
      */
     @Test
     void delete() {
-        recommendationDao = new RecommendationDao();
         recommendationDao.delete(recommendationDao.getRecommendationById(1));
         assertNull(recommendationDao.getRecommendationById(1));
     }
@@ -116,7 +119,6 @@ class RecommendationDaoTest {
      */
     @Test
     void getAll() {
-        recommendationDao = new RecommendationDao();
         List<Recommendation> recommendations = recommendationDao.getAll();
         assertEquals(12, recommendations.size());
     }
@@ -126,15 +128,16 @@ class RecommendationDaoTest {
      */
     @Test
     void getByPropertyEqual() {
-        recommendationDao = new RecommendationDao();
         List<Recommendation> recommendations = recommendationDao.getByPropertyEqual("notes", "NYT podcast recommended");
         assertEquals(1, recommendations.size());
         assertEquals(2, recommendations.get(0).getId());
     }
 
+    /**
+     * Gets by property like.
+     */
     @Test
     void getByPropertyLike() {
-        recommendationDao = new RecommendationDao();
         List<Recommendation> recommendations = recommendationDao.getByPropertyLike("notes", "best");
         assertEquals(2, recommendations.size());
     }

@@ -1,5 +1,6 @@
 package com.aozelce.persistence;
 
+import com.aozelce.entity.Recommendation;
 import com.aozelce.entity.User;
 import com.aozelce.util.Database;
 import org.apache.logging.log4j.LogManager;
@@ -19,7 +20,7 @@ class UserDaoTest {
     /**
      * The User dao.
      */
-    UserDao userDao = new UserDao();
+    UserDao userDao;
 
     /**
      * The Logger.
@@ -34,6 +35,7 @@ class UserDaoTest {
         logger.info("Running setUp method - resetting database");
         Database database = Database.getInstance();
         database.runSQL("cleanDB.sql");
+        userDao = new UserDao();
         logger.info("setUp method completed");
     }
 
@@ -46,7 +48,7 @@ class UserDaoTest {
      */
     @Test
     void getUserByIdSuccess() {
-        userDao = new UserDao();
+
         User retrievedUser = userDao.getUserById(2);
         assertNotNull(retrievedUser);
         assertEquals("john_doe", retrievedUser.getUsername());
@@ -63,7 +65,7 @@ class UserDaoTest {
      */
     @Test
     void updateSuccess() {
-        userDao = new UserDao();
+
         User userToUpdate = userDao.getUserById(1);
         userToUpdate.setUsername("Smith");
         userDao.saveUser(userToUpdate);
@@ -88,7 +90,7 @@ class UserDaoTest {
      */
     @Test
     void insertSuccess() {
-        UserDao userDao = new UserDao();
+
         User newUser = new User("ken@email.com", "ken");
         int newUserId = userDao.insert(newUser);
         User retrievedUser = userDao.getUserById(newUserId);
@@ -103,9 +105,35 @@ class UserDaoTest {
      */
     @Test
     void delete() {
-        userDao = new UserDao();
+
         userDao.delete(userDao.getUserById(2));
         assertNull(userDao.getUserById(2));
+    }
+
+    /**
+     * Tests the deletion of recommendations from the database
+     * when a user was deleted.
+     */
+    @Test
+    void deleteWithUser() {
+        // Get the user to delete
+        User userToDelete = userDao.getUserById(3);
+
+        // Get the associated orders
+        List<Recommendation> recommendations = userToDelete.getRecommendations();
+        int recommendation1Id = recommendations.get(0).getId();
+        int recommendation2Id = recommendations.get(1).getId();
+
+        // Delete the user
+        userDao.delete(userToDelete);
+
+        //Verify user was deleted
+        assertNull(userDao.getUserById(3));
+
+        // Verify the recommendations were also deleted
+        RecommendationDao recommendationDao = new RecommendationDao();
+        assertNull(recommendationDao.getRecommendationById(recommendation1Id));
+        assertNull(recommendationDao.getRecommendationById(recommendation2Id));
     }
 
     /**
@@ -117,7 +145,7 @@ class UserDaoTest {
      */
     @Test
     void getAll() {
-        userDao = new UserDao();
+
         List<User> users = userDao.getAll();
         assertEquals(6, users.size());
     }
@@ -131,7 +159,7 @@ class UserDaoTest {
      */
     @Test
     void getByPropertyEqual() {
-        userDao = new UserDao();
+
         List<User> users = userDao.getByPropertyEqual("username", "mike");
         assertEquals(1, users.size());
         assertEquals(5, users.get(0).getId());
@@ -146,7 +174,7 @@ class UserDaoTest {
      */
     @Test
     void getByPropertyLike() {
-        userDao = new UserDao();
+
         List<User> users = userDao.getByPropertyLike("username", "m");
         assertEquals(3, users.size());
     }

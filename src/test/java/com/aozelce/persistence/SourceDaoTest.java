@@ -20,7 +20,7 @@ class SourceDaoTest {
     /**
      * The Source dao.
      */
-    SourceDao sourceDao = new SourceDao();
+    SourceDao sourceDao;
 
     /**
      * The Logger.
@@ -35,6 +35,7 @@ class SourceDaoTest {
         logger.info("Running setUp method - resetting database");
         Database database = Database.getInstance();
         database.runSQL("cleanDB.sql");
+        sourceDao = new SourceDao();
         logger.info("setUp method completed");
     }
 
@@ -43,7 +44,6 @@ class SourceDaoTest {
      */
     @Test
     void getSourceByIdSuccess() {
-        sourceDao = new SourceDao();
         Source retrievedSource = sourceDao.getSourceById(1);
         assertNotNull(retrievedSource);
         assertEquals(1, retrievedSource.getId());
@@ -56,7 +56,6 @@ class SourceDaoTest {
      */
     @Test
     void updateSuccess() {
-        sourceDao = new SourceDao();
         Source sourceToUpdate = sourceDao.getSourceById(1);
         sourceToUpdate.setName("Sarah Updated");
         sourceDao.saveSource(sourceToUpdate);
@@ -70,7 +69,6 @@ class SourceDaoTest {
      */
     @Test
     void insertSuccess() {
-        sourceDao = new SourceDao();
         UserDao userDao = new UserDao();
         User user = userDao.getUserById(2);
 
@@ -88,7 +86,6 @@ class SourceDaoTest {
      */
     @Test
     void delete() {
-        sourceDao = new SourceDao();
         sourceDao.delete(sourceDao.getSourceById(1));
         assertNull(sourceDao.getSourceById(1));
     }
@@ -98,7 +95,6 @@ class SourceDaoTest {
      */
     @Test
     void getAll() {
-        sourceDao = new SourceDao();
         List<Source> sources = sourceDao.getAll();
         assertEquals(10, sources.size());
     }
@@ -108,7 +104,6 @@ class SourceDaoTest {
      */
     @Test
     void getByPropertyEqual() {
-        sourceDao = new SourceDao();
         List<Source> sources = sourceDao.getByPropertyEqual("name", "Sarah");
         assertEquals(1, sources.size());
         assertEquals(1, sources.get(0).getId());
@@ -120,7 +115,6 @@ class SourceDaoTest {
      */
     @Test
     void getByPropertyLike() {
-        sourceDao = new SourceDao();
         List<Source> sources = sourceDao.getByPropertyLike("name", "o");
         assertEquals(5, sources.size());
     }

@@ -19,7 +19,7 @@ class MediaDaoTest {
     /**
      * The Media dao.
      */
-    MediaDao mediaDao = new MediaDao();
+    MediaDao mediaDao;
 
     /**
      * The Logger.
@@ -34,6 +34,7 @@ class MediaDaoTest {
         logger.info("Running setUp method - resetting database");
         Database database = Database.getInstance();
         database.runSQL("cleanDB.sql");
+        mediaDao = new MediaDao();
         logger.info("setUp method completed");
     }
 
@@ -42,7 +43,7 @@ class MediaDaoTest {
      */
     @Test
     void getMediaByIdSuccess() {
-        mediaDao = new MediaDao();
+
         Media retrievedMedia = mediaDao.getMediaById(1);
         assertNotNull(retrievedMedia);
         assertEquals("The Bear", retrievedMedia.getTitle());
@@ -53,7 +54,6 @@ class MediaDaoTest {
      */
     @Test
     void updateSuccess() {
-        mediaDao = new MediaDao();
         Media mediaToUpdate = mediaDao.getMediaById(1);
         mediaToUpdate.setTitle("The Bear Updated");
         mediaDao.saveMedia(mediaToUpdate);
@@ -67,7 +67,6 @@ class MediaDaoTest {
      */
     @Test
     void insertSuccess() {
-        mediaDao = new MediaDao();
         Media newMedia = new Media(0, 99999, "Test Movie", "movie", 2024, "/test.jpg", "A test overview.", "Action");
         int newMediaId = mediaDao.insert(newMedia);
         Media retrievedMedia = mediaDao.getMediaById(newMediaId);
@@ -81,7 +80,6 @@ class MediaDaoTest {
      */
     @Test
     void delete() {
-        mediaDao = new MediaDao();
         mediaDao.delete(mediaDao.getMediaById(1));
         assertNull(mediaDao.getMediaById(1));
     }
@@ -91,7 +89,6 @@ class MediaDaoTest {
      */
     @Test
     void getAll() {
-        mediaDao = new MediaDao();
         List<Media> mediaList = mediaDao.getAll();
         assertEquals(12, mediaList.size());
     }
@@ -101,7 +98,6 @@ class MediaDaoTest {
      */
     @Test
     void getByPropertyEqual() {
-        mediaDao = new MediaDao();
         List<Media> mediaList = mediaDao.getByPropertyEqual("title", "Friends");
         assertEquals(1, mediaList.size());
         assertEquals(4, mediaList.get(0).getId());
@@ -116,7 +112,6 @@ class MediaDaoTest {
      */
     @Test
     void getByPropertyLike() {
-        mediaDao = new MediaDao();
         List<Media> mediaList = mediaDao.getByPropertyLike("title", "The");
         assertEquals(4, mediaList.size());
     }
