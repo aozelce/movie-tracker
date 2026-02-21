@@ -2,6 +2,8 @@ package com.aozelce.entity;
 
 import jakarta.persistence.*;
 
+import java.util.Objects;
+
 /**
  * The type Media.
  *
@@ -223,5 +225,17 @@ public class Media {
                 ", overview='" + overview + '\'' +
                 ", genres='" + genres + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Media media = (Media) o;
+        return getId() == media.getId() && getTmdbId() == media.getTmdbId() && getYear() == media.getYear() && Objects.equals(getTitle(), media.getTitle()) && Objects.equals(getMediaType(), media.getMediaType()) && Objects.equals(getPosterPath(), media.getPosterPath()) && Objects.equals(getOverview(), media.getOverview()) && Objects.equals(getGenres(), media.getGenres());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getTmdbId(), getTitle(), getMediaType(), getYear(), getPosterPath(), getOverview(), getGenres());
     }
 }

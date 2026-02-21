@@ -2,6 +2,8 @@ package com.aozelce.entity;
 
 import jakarta.persistence.*;
 
+import java.util.Objects;
+
 /**
  * The type Recommendation.
  *
@@ -177,5 +179,17 @@ public class Recommendation {
                 ", notes='" + notes + '\'' +
                 ", isWatched=" + isWatched +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Recommendation that = (Recommendation) o;
+        return getId() == that.getId() && isWatched() == that.isWatched() && Objects.equals(getUser(), that.getUser()) && Objects.equals(getSource(), that.getSource()) && Objects.equals(getMedia(), that.getMedia()) && Objects.equals(getNotes(), that.getNotes());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getUser(), getSource(), getMedia(), getNotes(), isWatched());
     }
 }

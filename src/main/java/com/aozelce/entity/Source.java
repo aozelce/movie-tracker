@@ -2,6 +2,8 @@ package com.aozelce.entity;
 
 import jakarta.persistence.*;
 
+import java.util.Objects;
+
 /**
  * The type Source.
  *
@@ -103,5 +105,17 @@ public class Source {
                 ", user=" + user.getId() +
                 ", name='" + name + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Source source = (Source) o;
+        return getId() == source.getId() && Objects.equals(getUser(), source.getUser()) && Objects.equals(getName(), source.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getUser(), getName());
     }
 }
