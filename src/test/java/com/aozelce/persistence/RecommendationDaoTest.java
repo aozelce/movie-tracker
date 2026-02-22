@@ -22,7 +22,7 @@ class RecommendationDaoTest {
     /**
      * The Recommendation dao.
      */
-    RecommendationDao recommendationDao;
+    GenericDao<Recommendation> genericDao;
 
     /**
      * The Logger.
@@ -37,7 +37,7 @@ class RecommendationDaoTest {
         logger.info("Running setUp method - resetting database");
         Database database = Database.getInstance();
         database.runSQL("cleanDB.sql");
-        recommendationDao = new RecommendationDao();
+        genericDao = new GenericDao<>(Recommendation.class);
         logger.info("setUp method completed");
 
     }
@@ -48,7 +48,7 @@ class RecommendationDaoTest {
     @Test
     void getRecommendationByIdSuccess() {
 
-        Recommendation retrievedRecommendation = recommendationDao.getRecommendationById(1);
+        Recommendation retrievedRecommendation = genericDao.getById(1);
         assertNotNull(retrievedRecommendation);
         assertEquals("john_doe", retrievedRecommendation.getUser().getUsername());
         assertEquals("Sarah", retrievedRecommendation.getSource().getName());
@@ -63,13 +63,13 @@ class RecommendationDaoTest {
     @Test
     void updateSuccess() {
         // Fetch the existing recommendation
-        Recommendation toUpdate = recommendationDao.getRecommendationById(1);
+        Recommendation toUpdate = genericDao.getById(1);
         // Update the notes
         toUpdate.setNotes("Updated notes");
         // Save the updated recommendation
-        recommendationDao.saveRecommendation(toUpdate);
+        genericDao.saveOrUpdate(toUpdate);
         // Fetch it again to verify the update
-        Recommendation actual = recommendationDao.getRecommendationById(1);
+        Recommendation actual = genericDao.getById(1);
         // Verify the notes were updated
         assertEquals(toUpdate, actual);
     }
@@ -81,13 +81,14 @@ class RecommendationDaoTest {
     void insertSuccess() {
 
         // Fetch existing user, source, and media to set up the new recommendation
-        UserDao userDao = new UserDao();
-        SourceDao sourceDao = new SourceDao();
-        MediaDao mediaDao = new MediaDao();
+        GenericDao<User> genericDaoUser = new GenericDao<>(User.class);
+        GenericDao<Source> genericDaoSource = new GenericDao<>(Source.class);
+        GenericDao<Media> genericDaoMedia = new GenericDao<>(Media.class);
+
         // Using existing user, source, and media for the new recommendation
-        User user = userDao.getUserById(2);
-        Source source = sourceDao.getSourceById(1);
-        Media media = mediaDao.getMediaById(1);
+        User user = genericDaoUser.getById(2);
+        Source source = genericDaoSource.getById(1);
+        Media media = genericDaoMedia.getById(1);
         // Create a new recommendation
         Recommendation newRecommendation = new Recommendation();
         newRecommendation.setSource(source);
@@ -97,9 +98,10 @@ class RecommendationDaoTest {
         // Add the new recommendation to the user's list of recommendations
         user.addRecommendation(newRecommendation);
         // Insert the new recommendation and get the generated ID
-        int newRecommendationId = recommendationDao.insert(newRecommendation);
+        int newRecommendationId = genericDao.insert(newRecommendation);
         // Verify the new recommendation was inserted correctly
-        Recommendation retrievedRecommendation = recommendationDao.getRecommendationById(newRecommendationId);
+        Recommendation retrievedRecommendation =
+                genericDao.getById(newRecommendationId);
         assertNotNull(retrievedRecommendation);
         assertEquals(newRecommendation, retrievedRecommendation);
     }
@@ -111,19 +113,20 @@ class RecommendationDaoTest {
     @Test
     void delete() {
         // Fetch the recommendation to be deleted
-        Recommendation recommendationToDelete = recommendationDao.getRecommendationById(1);
+        Recommendation recommendationToDelete = genericDao.getById(1);
         // Delete the recommendation
-        recommendationDao.delete(recommendationToDelete);
-        assertNull(recommendationDao.getRecommendationById(recommendationToDelete.getId()));
+        genericDao.delete(recommendationToDelete);
+        assertNull(genericDao.getById(recommendationToDelete.getId()));
 
         // Fetch the user and source associated with the deleted recommendation
-        UserDao userDao = new UserDao();
-        SourceDao sourceDao = new SourceDao();
+        GenericDao<User> userDao = new GenericDao<>(User.class);
+        GenericDao<Source> sourceDao = new GenericDao<>(Source.class);
+
         User user = recommendationToDelete.getUser();
         Source source = recommendationToDelete.getSource();
         // Verify that the user and source still exist in the database
-        assertNotNull(userDao.getUserById(user.getId()));
-        assertNotNull(sourceDao.getSourceById(source.getId()));
+        assertNotNull(userDao.getById(user.getId()));
+        assertNotNull(sourceDao.getById(source.getId()));
     }
 
     /**
@@ -131,7 +134,7 @@ class RecommendationDaoTest {
      */
     @Test
     void getAll() {
-        List<Recommendation> recommendations = recommendationDao.getAll();
+        List<Recommendation> recommendations = genericDao.getAll();
         assertEquals(12, recommendations.size());
     }
 
@@ -141,11 +144,12 @@ class RecommendationDaoTest {
     @Test
     void getByPropertyEqual() {
         // Retrieve recommendations with notes exactly matching the search term
-        List<Recommendation> recommendations = recommendationDao.getByPropertyEqual("notes", "NYT podcast recommended");
+        List<Recommendation> recommendations = genericDao.getByPropertyEqual("notes",
+                "NYT podcast recommended");
         // Assign the retrieved recommendation to a variable for comparison
         Recommendation retrievedRecommendation = recommendations.get(0);
         // Retrieve the recommendation with ID 2 to compare against
-        Recommendation expectedRecommendation = recommendationDao.getRecommendationById(2);
+        Recommendation expectedRecommendation = genericDao.getById(2);
         // Verify that the retrieved recommendation matches the expected recommendation
         assertEquals(expectedRecommendation, retrievedRecommendation);
     }
@@ -155,7 +159,8 @@ class RecommendationDaoTest {
      */
     @Test
     void getByPropertyLike() {
-        List<Recommendation> recommendations = recommendationDao.getByPropertyLike("notes", "best");
+        List<Recommendation> recommendations = genericDao.getByPropertyLike("notes",
+                "best");
         assertEquals(2, recommendations.size());
     }
 }
