@@ -20,7 +20,7 @@ class SourceDaoTest {
     /**
      * The Source dao.
      */
-    SourceDao sourceDao;
+    GenericDao<Source> genericDao;
 
     /**
      * The Logger.
@@ -35,7 +35,7 @@ class SourceDaoTest {
         logger.info("Running setUp method - resetting database");
         Database database = Database.getInstance();
         database.runSQL("cleanDB.sql");
-        sourceDao = new SourceDao();
+        genericDao = new GenericDao<>(Source.class);
         logger.info("setUp method completed");
     }
 
@@ -44,7 +44,7 @@ class SourceDaoTest {
      */
     @Test
     void getSourceByIdSuccess() {
-        Source retrievedSource = sourceDao.getSourceById(1);
+        Source retrievedSource = genericDao.getById(1);
         assertNotNull(retrievedSource);
         assertEquals(1, retrievedSource.getId());
         assertEquals("Sarah", retrievedSource.getName());
@@ -56,11 +56,11 @@ class SourceDaoTest {
      */
     @Test
     void updateSuccess() {
-        Source sourceToUpdate = sourceDao.getSourceById(1);
+        Source sourceToUpdate = genericDao.getById(1);
         sourceToUpdate.setName("Sarah Updated");
-        sourceDao.saveSource(sourceToUpdate);
+        genericDao.saveOrUpdate(sourceToUpdate);
 
-        Source actualSource = sourceDao.getSourceById(1);
+        Source actualSource = genericDao.getById(1);
         assertEquals("Sarah Updated", actualSource.getName());
     }
 
@@ -69,12 +69,12 @@ class SourceDaoTest {
      */
     @Test
     void insertSuccess() {
-        UserDao userDao = new UserDao();
-        User user = userDao.getUserById(2);
+        GenericDao<User> genericDaoUser = new GenericDao<>(User.class);
+        User user = genericDaoUser.getById(2);
 
         Source newSource = new Source(0, user, "New Source");
-        int newSourceId = sourceDao.insert(newSource);
-        Source retrievedSource = sourceDao.getSourceById(newSourceId);
+        int newSourceId = genericDao.insert(newSource);
+        Source retrievedSource = genericDao.getById(newSourceId);
         assertNotNull(retrievedSource);
         assertEquals("New Source", retrievedSource.getName());
         assertNotEquals(0, newSourceId);
@@ -86,8 +86,8 @@ class SourceDaoTest {
      */
     @Test
     void delete() {
-        sourceDao.delete(sourceDao.getSourceById(1));
-        assertNull(sourceDao.getSourceById(1));
+        genericDao.delete(genericDao.getById(1));
+        assertNull(genericDao.getById(1));
     }
 
     /**
@@ -95,7 +95,7 @@ class SourceDaoTest {
      */
     @Test
     void getAll() {
-        List<Source> sources = sourceDao.getAll();
+        List<Source> sources = genericDao.getAll();
         assertEquals(10, sources.size());
     }
 
@@ -104,7 +104,7 @@ class SourceDaoTest {
      */
     @Test
     void getByPropertyEqual() {
-        List<Source> sources = sourceDao.getByPropertyEqual("name", "Sarah");
+        List<Source> sources = genericDao.getByPropertyEqual("name", "Sarah");
         assertEquals(1, sources.size());
         assertEquals(1, sources.get(0).getId());
         assertEquals(2, sources.get(0).getUser().getId());
@@ -115,7 +115,7 @@ class SourceDaoTest {
      */
     @Test
     void getByPropertyLike() {
-        List<Source> sources = sourceDao.getByPropertyLike("name", "o");
+        List<Source> sources = genericDao.getByPropertyLike("name", "o");
         assertEquals(5, sources.size());
     }
 }

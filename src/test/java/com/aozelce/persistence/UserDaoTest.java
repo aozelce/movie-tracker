@@ -22,7 +22,7 @@ class UserDaoTest {
     /**
      * The User dao.
      */
-    UserDao userDao;
+    GenericDao<User> genericDao;
 
     /**
      * The Logger.
@@ -34,24 +34,22 @@ class UserDaoTest {
      */
     @BeforeEach
     void setUp() {
-        logger.info("Running setUp method - resetting database");
         Database database = Database.getInstance();
         database.runSQL("cleanDB.sql");
-        userDao = new UserDao();
-        logger.info("setUp method completed");
+        genericDao = new GenericDao<>(User.class);
     }
 
     /**
      * Tests the successful retrieval of a user by their ID using the UserDao class.
      * - Creates an instance of the UserDao class.
-     * - Calls the getUserById method with a valid user ID.
+     * - Calls the getById method with a valid user ID.
      * - Asserts that the retrieved user object is not null.
      * - Asserts that the username of the retrieved user matches the expected value.
      */
     @Test
     void getUserByIdSuccess() {
         // Retrieve a user by ID
-        User retrievedUser = userDao.getUserById(2);
+        User retrievedUser = genericDao.getById(2);
         // Assert that the retrieved user is not null and has the expected username
         assertNotNull(retrievedUser);
         // Assert that the username of the retrieved user matches the expected value
@@ -70,13 +68,13 @@ class UserDaoTest {
     @Test
     void updateSuccess() {
         // Retrieve the user to update
-        User userToUpdate = userDao.getUserById(1);
+        User userToUpdate = genericDao.getById(1);
         // Update the user's username
         userToUpdate.setUsername("Smith");
         // Save the updated user back to the database
-        userDao.saveUser(userToUpdate);
+        genericDao.saveOrUpdate(userToUpdate);
         // Retrieve the user and check that the name change worked
-        User actualUser = userDao.getUserById(1);
+        User actualUser = genericDao.getById(1);
         // Assert that the updated user matches the expected user
         assertEquals(userToUpdate, actualUser);
     }
@@ -96,9 +94,9 @@ class UserDaoTest {
         // Create a new user to insert
         User newUser = new User("dan@email.com", "dan");
         // Insert the new user and get the generated ID
-        int newUserId = userDao.insert(newUser);
+        int newUserId = genericDao.insert(newUser);
         // Retrieve the user by the generated ID
-        User retrievedUser = userDao.getUserById(newUserId);
+        User retrievedUser = genericDao.getById(newUserId);
         // Assert that the retrieved user is not null
         assertNotNull(retrievedUser);
         // Assert that the user matches with the expected user
@@ -108,12 +106,12 @@ class UserDaoTest {
     @Test
     void insertWithRecommendationsSuccess() {
         // Create DAOs needed to fetch related objects
-        MediaDao mediaDao = new MediaDao();
-        SourceDao sourceDao = new SourceDao();
+        GenericDao<Media> genericDaoMedia = new GenericDao<>(Media.class);
+        GenericDao<Source> genericDaoSource = new GenericDao<>(Source.class);
 
         // Fetch real media and source objects to satisfy not-null constraints
-        Media media = mediaDao.getMediaById(1);
-        Source source = sourceDao.getSourceById(1);
+        Media media = genericDaoMedia.getById(1);
+        Source source = genericDaoSource.getById(1);
 
         // Create a new user to insert
         User newUser = new User("charlie@email.com", "charlie");
@@ -139,10 +137,10 @@ class UserDaoTest {
         newUser.addRecommendation(rec2);
 
         // Insert the new user and get the generated ID
-        int newUserId = userDao.insert(newUser);
+        int newUserId = genericDao.insert(newUser);
 
         // Retrieve the user by the generated ID
-        User retrievedUser = userDao.getUserById(newUserId);
+        User retrievedUser = genericDao.getById(newUserId);
 
         // Assert that the retrieved user is not null
         assertNotNull(retrievedUser);
@@ -165,9 +163,9 @@ class UserDaoTest {
         User user = new User();
         user.setId(2);
         // Delete the user
-        userDao.delete(user);
+        genericDao.delete(user);
         // Verify the user was deleted
-        assertNull(userDao.getUserById(user.getId()));
+        assertNull(genericDao.getById(user.getId()));
     }
 
     /**
@@ -177,7 +175,7 @@ class UserDaoTest {
     @Test
     void deleteWithUser() {
         // Get the user to delete
-        User userToDelete = userDao.getUserById(3);
+        User userToDelete = genericDao.getById(3);
 
         // Get the associated orders
         List<Recommendation> recommendations = userToDelete.getRecommendations();
@@ -185,15 +183,16 @@ class UserDaoTest {
         int recommendation2Id = recommendations.get(1).getId();
 
         // Delete the user
-        userDao.delete(userToDelete);
+        genericDao.delete(userToDelete);
 
         //Verify user was deleted
-        assertNull(userDao.getUserById(3));
+        assertNull(genericDao.getById(3));
 
         // Verify the recommendations were also deleted
-        RecommendationDao recommendationDao = new RecommendationDao();
-        assertNull(recommendationDao.getRecommendationById(recommendation1Id));
-        assertNull(recommendationDao.getRecommendationById(recommendation2Id));
+        GenericDao<Recommendation> genericDaoRec=
+                new GenericDao<>(Recommendation.class);
+        assertNull(genericDaoRec.getById(recommendation1Id));
+        assertNull(genericDaoRec.getById(recommendation2Id));
     }
 
     /**
@@ -205,7 +204,7 @@ class UserDaoTest {
     @Test
     void getAll() {
 
-        List<User> users = userDao.getAll();
+        List<User> users = genericDao.getAll();
         assertEquals(7, users.size());
     }
 
@@ -220,7 +219,7 @@ class UserDaoTest {
     @Test
     void getByPropertyEqual() {
         // Assign the result of the getByPropertyEqual method to a list of users
-        List<User> users = userDao.getByPropertyEqual("username", "mike");
+        List<User> users = genericDao.getByPropertyEqual("username", "mike");
         // Assert that the size of the retrieved user list
         assertEquals(1, users.size());
         // Assert that the ID of the retrieved user matches the expected value
@@ -238,7 +237,7 @@ class UserDaoTest {
     @Test
     void getByPropertyLike() {
 
-        List<User> users = userDao.getByPropertyLike("username", "m");
+        List<User> users = genericDao.getByPropertyLike("username", "m");
         assertEquals(3, users.size());
     }
 }

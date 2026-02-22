@@ -2,7 +2,8 @@ package com.aozelce.controller;
 
 import com.aozelce.entity.Recommendation;
 import com.aozelce.entity.User;
-import com.aozelce.persistence.UserDao;
+import com.aozelce.persistence.GenericDao;
+
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -24,8 +25,8 @@ public class RecommendationServlet extends HttpServlet {
             throws ServletException, IOException {
 
         // hardcoding user id 2 for now until implementing the AWS login
-        UserDao userDao = new UserDao();
-        User user = userDao.getUserById(2);
+        GenericDao<User> genericDaoUser = new GenericDao<>(User.class);
+        User user = genericDaoUser.getById(2);
 
         List<Recommendation> recommendations = user.getRecommendations();
 

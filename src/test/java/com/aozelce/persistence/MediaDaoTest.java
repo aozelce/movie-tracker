@@ -19,7 +19,7 @@ class MediaDaoTest {
     /**
      * The Media dao.
      */
-    MediaDao mediaDao;
+    GenericDao<Media> genericDao;
 
     /**
      * The Logger.
@@ -34,7 +34,7 @@ class MediaDaoTest {
         logger.info("Running setUp method - resetting database");
         Database database = Database.getInstance();
         database.runSQL("cleanDB.sql");
-        mediaDao = new MediaDao();
+        genericDao = new GenericDao<>(Media.class);
         logger.info("setUp method completed");
     }
 
@@ -44,7 +44,7 @@ class MediaDaoTest {
     @Test
     void getMediaByIdSuccess() {
 
-        Media retrievedMedia = mediaDao.getMediaById(1);
+        Media retrievedMedia = genericDao.getById(1);
         assertNotNull(retrievedMedia);
         assertEquals("The Bear", retrievedMedia.getTitle());
     }
@@ -54,11 +54,11 @@ class MediaDaoTest {
      */
     @Test
     void updateSuccess() {
-        Media mediaToUpdate = mediaDao.getMediaById(1);
+        Media mediaToUpdate = genericDao.getById(1);
         mediaToUpdate.setTitle("The Bear Updated");
-        mediaDao.saveMedia(mediaToUpdate);
+        genericDao.saveOrUpdate(mediaToUpdate);
 
-        Media actualMedia = mediaDao.getMediaById(1);
+        Media actualMedia = genericDao.getById(1);
         assertEquals("The Bear Updated", actualMedia.getTitle());
     }
 
@@ -67,9 +67,10 @@ class MediaDaoTest {
      */
     @Test
     void insertSuccess() {
-        Media newMedia = new Media(0, 99999, "Test Movie", "movie", 2024, "/test.jpg", "A test overview.", "Action");
-        int newMediaId = mediaDao.insert(newMedia);
-        Media retrievedMedia = mediaDao.getMediaById(newMediaId);
+        Media newMedia = new Media(0, 99999, "Test Movie",
+                "movie", 2024, "/test.jpg", "A test overview.", "Action");
+        int newMediaId = genericDao.insert(newMedia);
+        Media retrievedMedia = genericDao.getById(newMediaId);
         assertNotNull(retrievedMedia);
         assertEquals("Test Movie", retrievedMedia.getTitle());
         assertNotEquals(0, newMediaId);
@@ -80,8 +81,8 @@ class MediaDaoTest {
      */
     @Test
     void delete() {
-        mediaDao.delete(mediaDao.getMediaById(1));
-        assertNull(mediaDao.getMediaById(1));
+        genericDao.delete(genericDao.getById(1));
+        assertNull(genericDao.getById(1));
     }
 
     /**
@@ -89,7 +90,7 @@ class MediaDaoTest {
      */
     @Test
     void getAll() {
-        List<Media> mediaList = mediaDao.getAll();
+        List<Media> mediaList = genericDao.getAll();
         assertEquals(12, mediaList.size());
     }
 
@@ -98,7 +99,7 @@ class MediaDaoTest {
      */
     @Test
     void getByPropertyEqual() {
-        List<Media> mediaList = mediaDao.getByPropertyEqual("title", "Friends");
+        List<Media> mediaList = genericDao.getByPropertyEqual("title", "Friends");
         assertEquals(1, mediaList.size());
         assertEquals(4, mediaList.get(0).getId());
         assertEquals(1668, mediaList.get(0).getTmdbId());
@@ -112,7 +113,7 @@ class MediaDaoTest {
      */
     @Test
     void getByPropertyLike() {
-        List<Media> mediaList = mediaDao.getByPropertyLike("title", "The");
+        List<Media> mediaList = genericDao.getByPropertyLike("title", "The");
         assertEquals(4, mediaList.size());
     }
 }
