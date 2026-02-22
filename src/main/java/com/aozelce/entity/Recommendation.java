@@ -23,7 +23,7 @@ public class Recommendation {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "source_id", nullable = false)
+    @JoinColumn(name = "source_id")
     private Source source;
 
     @ManyToOne

@@ -94,7 +94,7 @@ class UserDaoTest {
     @Test
     void insertSuccess() {
         // Create a new user to insert
-        User newUser = new User("ken@email.com", "ken");
+        User newUser = new User("dan@email.com", "dan");
         // Insert the new user and get the generated ID
         int newUserId = userDao.insert(newUser);
         // Retrieve the user by the generated ID
@@ -206,7 +206,7 @@ class UserDaoTest {
     void getAll() {
 
         List<User> users = userDao.getAll();
-        assertEquals(6, users.size());
+        assertEquals(7, users.size());
     }
 
     /**

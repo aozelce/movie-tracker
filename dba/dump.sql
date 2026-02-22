@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.33, for Win64 (x86_64)
 --
--- Host: 127.0.0.1    Database: movie_tracker_test
+-- Host: 127.0.0.1    Database: movie_tracker_experiment
 -- ------------------------------------------------------
 -- Server version	8.0.33
 
@@ -58,7 +58,7 @@ CREATE TABLE `recommendation` (
   `id` int NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
   `source_id` int DEFAULT NULL,
-  `media_id` int DEFAULT NULL,
+  `media_id` int NOT NULL,
   `notes` text,
   `is_watched` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`),
@@ -67,8 +67,8 @@ CREATE TABLE `recommendation` (
   KEY `idx_user_id` (`user_id`),
   CONSTRAINT `recommendation_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE,
   CONSTRAINT `recommendation_ibfk_2` FOREIGN KEY (`source_id`) REFERENCES `source` (`id`) ON DELETE SET NULL,
-  CONSTRAINT `recommendation_ibfk_3` FOREIGN KEY (`media_id`) REFERENCES `media` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `recommendation_ibfk_3` FOREIGN KEY (`media_id`) REFERENCES `media` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -122,7 +122,7 @@ CREATE TABLE `user` (
   `username` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -131,12 +131,12 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'','alperen@email.com','alperen'),(2,'','john.doe@email.com','john_doe'),(3,'','mike.chen@email.com','mike_chen'),(4,'','sarah.smith@email.com','sarah_smith'),(5,NULL,'mike@email.com','mike'),(7,NULL,'john@email.com','john');
+INSERT INTO `user` VALUES (1,'','alperen@email.com','alperen'),(2,'','john.doe@email.com','john_doe'),(3,'','mike.chen@email.com','mike_chen'),(4,'','sarah.smith@email.com','sarah_smith'),(5,NULL,'mike@email.com','mike'),(7,NULL,'john@email.com','john'),(8,NULL,'ken@email.com','ken');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Dumping routines for database 'movie_tracker_test'
+-- Dumping routines for database 'movie_tracker_experiment'
 --
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -148,4 +148,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-02-18 18:18:23
+-- Dump completed on 2026-02-22 23:42:02
