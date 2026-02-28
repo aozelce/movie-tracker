@@ -48,4 +48,6 @@ src/test/resources/hibernate.cfg.xml
 
 #Log file
 logs/movie-tracker.log
-#TODO: Remember to ignore sensitive files (properties files etc)
+
+#Cognito properties
+/src/main/resources/cognito.properties

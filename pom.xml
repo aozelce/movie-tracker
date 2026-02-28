@@ -22,6 +22,9 @@
     <maven-surefire-plugin-version>2.19</maven-surefire-plugin-version>
     <hibernate-version>6.4.3.Final</hibernate-version>
     <jersey-version>2.29.1</jersey-version>
+    <java-jwt-version>3.4.1</java-jwt-version>
+    <json-version>20170516</json-version>
+    <commons-io-version>2.11.0</commons-io-version>
   </properties>
 
   <dependencies>
@@ -102,6 +105,23 @@
       <groupId>org.glassfish.jersey.inject</groupId>
       <artifactId>jersey-hk2</artifactId>
       <version>${jersey-version}</version>
+    </dependency>
+    <!-- for parsing access token -->
+    <dependency>
+      <groupId>com.auth0</groupId>
+      <artifactId>java-jwt</artifactId>
+      <version>${java-jwt-version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+      <version>${json-version}</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>${commons-io-version}</version>
     </dependency>
 
   </dependencies>
