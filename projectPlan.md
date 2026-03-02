@@ -45,64 +45,63 @@
 ## Week 5 (2/16) — Hibernate
 *Class: Hibernate*
 
-- [ ] Research TMDB API — register for API key and test endpoints
-- [ ] Add Project Lombok annotations (`@Data`, `@NoArgsConstructor`, `@AllArgsConstructor`) **OPTIONAL**
+- [X] Research TMDB API — register for API key and test endpoints
 
-- [ ] Create `GenericDao<T>` with `getAll()`, `getById()`, `insert()`, `update()`, `delete()`
-- [ ] Create `RecommendationDao` extending `GenericDao` (add `toggleWatched()`)
-- [ ] Create `SourceDao` extending `GenericDao`
-- [ ] Create `MediaDao` extending `GenericDao`
-- [ ] Create `UserDao` extending `GenericDao` (add `getByCognitoId()`)
-- [ ] Set up JUnit 5 for testing
-- [ ] Create test database configuration
-- [ ] Write unit tests for all DAOs (70%+ coverage)
-  - [ ] Create test data in `@BeforeEach`
-  - [ ] Test CRUD operations
-  - [ ] Test custom queries
-  - [ ] Test cascade behaviors
-  - [ ] Clean up test data in `@AfterEach`
-- [ ] Add comprehensive Log4J2 logging to all DAO methods
-- [ ] Ensure all database access uses Hibernate (no raw JDBC)
-- [ ] Complete Week 5 Exercise
-- [ ] Weekly reflection/time log
+- [X] Create `GenericDao<T>` with `getAll()`, `getById()`, `insert()`, `update()`, `delete()`
+- [X] Create `RecommendationDao` extending `GenericDao` (add `toggleWatched()`)
+- [X] Create `SourceDao` extending `GenericDao`
+- [X] Create `MediaDao` extending `GenericDao`
+- [X] Create `UserDao` extending `GenericDao` (add `getByCognitoId()`)
+- [X] Set up JUnit 5 for testing
+- [X] Create test database configuration
+- [X] Write unit tests for all DAOs (70%+ coverage)
+  - [X] Create test data in `@BeforeEach`
+  - [X] Test CRUD operations
+  - [X] Test custom queries
+  - [X] Test cascade behaviors
+- [X] Add comprehensive Log4J2 logging to all DAO methods
+- [X] Ensure all database access uses Hibernate (no raw JDBC)
+- [X] Complete Week 5 Exercise
+- [X] Weekly reflection/time log
 
 ---
 
 ## Week 6 (2/23) — AWS Deployment & Project Reviews
 *Class: Deployment to AWS, Individual Project Reviews*
 
-- [ ] Research AWS Elastic Beanstalk deployment options
-- [ ] Create production `hibernate.cfg.xml` (use env vars for credentials)
+- [X] Research AWS Elastic Beanstalk deployment options
+- [X] Create production `hibernate.cfg.xml` (use env vars for credentials)
 - [ ] Update all documentation for peer review
-- [ ] Ensure ERD is clear and complete
-- [ ] Verify all 10 MVP user stories documented
+- [X] Ensure ERD is clear and complete
+- [X] Verify all 11 MVP user stories documented
 - [ ] Clean up GitHub repository
 - [ ] **Participate in Peer Design Review session**
 - [ ] Document feedback received from peer review
-- [ ] Complete Week 6 Exercise
-- [ ] Weekly reflection/time log
+- [X] Complete Week 6 Exercise
+- [X] Weekly reflection/time log
 
 ---
 
 ## Week 7 (3/2) — Security and Authentication
 *Class: Security, Authentication | **CHECKPOINT 2 DUE 3/4***
 
-- [ ] Double-check all Checkpoint 2 requirements
-  - [ ] Database schema created (MySQL locally)
-  - [ ] At least one DAO with full CRUD
-  - [ ] DAO fully unit tested
-  - [ ] Log4J2 configured and used throughout
-  - [ ] No `System.out.println` anywhere
-- [ ] Set up AWS Cognito User Pool (configure pool, password policy, sign-in, app client)
-- [ ] Add AWS SDK for Java dependency to `pom.xml`
+- [X] Double-check all Checkpoint 2 requirements
+  - [X] Database schema created (MySQL locally)
+  - [X] At least one DAO with full CRUD
+  - [X] DAO fully unit tested
+  - [X] Log4J2 configured and used throughout
+  - [X] No `System.out.println` anywhere
+- [X] Set up AWS Cognito User Pool (configure pool, password policy, sign-in,
+  app client)
+- [X] Add AWS SDK for Java dependency to `pom.xml`
 - [ ] Create `CognitoUtil` helper class (`authenticateUser`, `registerUser`, `getUser`)
 - [ ] Create `AuthenticationFilter` (implements `Filter`)
 - [ ] Map filter in `web.xml` to protect all pages except login
 - [ ] Create session management utilities
-- [ ] Test authentication flow locally with Cognito
-- [ ] Add logging for all authentication events
+- [X] Test authentication flow locally with Cognito
+- [X] Add logging for all authentication events
 - [ ] **Submit Checkpoint 2 by 3/4**
-- [ ] Complete Week 7 Exercise
+- [X] Complete Week 7 Exercise
 - [ ] Weekly reflection/time log
 
 ---
@@ -123,6 +122,7 @@
 - [ ] Complete Week 8 Exercise
 - [ ] Weekly reflection/time log
 
+- [ ] Add Project Lombok annotations (`@Data`, `@NoArgsConstructor`, `@AllArgsConstructor`) **OPTIONAL**
 ---
 
 ## Week 9 (3/23) — RESTful Web Services
