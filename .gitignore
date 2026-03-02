@@ -51,3 +51,6 @@ logs/movie-tracker.log
 
 #Cognito properties
 /src/main/resources/cognito.properties
+
+#SSL certificate and key files
+/src/main/.ebextensions/https-instance.config
