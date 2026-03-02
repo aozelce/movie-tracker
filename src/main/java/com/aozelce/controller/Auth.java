@@ -7,11 +7,11 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.aozelce.auth.*;
-import com.aozelce.util.PropertiesLoader;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -36,20 +36,17 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.RSAPublicKeySpec;
 import java.util.Base64;
 import java.util.HashMap;
-import java.util.Properties;
 import java.util.stream.Collectors;
 
 
 @WebServlet(
         urlPatterns = {"/auth"}
 )
-// TODO if something goes wrong it this process, route to an error page. Currently, errors are only caught and logged.
 /**
  * Inspired by: https://stackoverflow.com/questions/52144721/how-to-get-access-token-using-client-credentials-using-java-code
  */
 
-public class Auth extends HttpServlet implements PropertiesLoader {
-    Properties properties;
+public class Auth extends HttpServlet {
     String CLIENT_ID;
     String CLIENT_SECRET;
     String OAUTH_URL;
@@ -64,8 +61,26 @@ public class Auth extends HttpServlet implements PropertiesLoader {
     @Override
     public void init() throws ServletException {
         super.init();
-        loadProperties();
+        loadPropertiesFromApplicationScope();
         loadKey();
+    }
+
+    /**
+     * Load Cognito properties from application scope (set by ApplicationStartup servlet)
+     */
+    private void loadPropertiesFromApplicationScope() {
+        CLIENT_ID = (String) getServletContext().getAttribute("client.id");
+        CLIENT_SECRET = (String) getServletContext().getAttribute("client.secret");
+        OAUTH_URL = (String) getServletContext().getAttribute("oauthURL");
+        LOGIN_URL = (String) getServletContext().getAttribute("loginURL");
+        REDIRECT_URL = (String) getServletContext().getAttribute("redirectURL");
+        REGION = (String) getServletContext().getAttribute("region");
+        POOL_ID = (String) getServletContext().getAttribute("poolId");
+
+        if (CLIENT_ID == null || REGION == null || POOL_ID == null) {
+            logger.error("Cognito properties were not loaded properly during application startup");
+
+        }
     }
 
     /**
@@ -81,7 +96,7 @@ public class Auth extends HttpServlet implements PropertiesLoader {
         String userName = null;
 
         if (authCode == null) {
-            //TODO forward to an error page or back to the login
+            resp.sendRedirect("error.jsp");
         } else {
             HttpRequest authRequest = buildAuthRequest(authCode);
             try {
@@ -89,11 +104,11 @@ public class Auth extends HttpServlet implements PropertiesLoader {
                 userName = validate(tokenResponse);
                 req.setAttribute("userName", userName);
             } catch (IOException e) {
-                logger.error("Error getting or validating the token: " + e.getMessage(), e);
-                //TODO forward to an error page
+                logger.error("Error getting or validating the token", e);
+                resp.sendRedirect("error.jsp");
             } catch (InterruptedException e) {
-                logger.error("Error getting token from Cognito oauth url " + e.getMessage(), e);
-                //TODO forward to an error page
+                logger.error("Error getting token from Cognito oauth url", e);
+                resp.sendRedirect("error.jsp");
             }
         }
         RequestDispatcher dispatcher = req.getRequestDispatcher("index.jsp");
@@ -232,28 +247,6 @@ public class Auth extends HttpServlet implements PropertiesLoader {
             logger.error("Cannot load json..." + ioException.getMessage(), ioException);
         } catch (Exception e) {
             logger.error("Error loading json" + e.getMessage(), e);
-        }
-    }
-
-    /**
-     * Read in the cognito props file and get/set the client id, secret, and required urls
-     * for authenticating a user.
-     */
-    // TODO This code appears in a couple classes, consider using a startup servlet similar to adv java project
-    private void loadProperties() {
-        try {
-            properties = loadProperties("/cognito.properties");
-            CLIENT_ID = properties.getProperty("client.id");
-            CLIENT_SECRET = properties.getProperty("client.secret");
-            OAUTH_URL = properties.getProperty("oauthURL");
-            LOGIN_URL = properties.getProperty("loginURL");
-            REDIRECT_URL = properties.getProperty("redirectURL");
-            REGION = properties.getProperty("region");
-            POOL_ID = properties.getProperty("poolId");
-        } catch (IOException ioException) {
-            logger.error("Cannot load properties..." + ioException.getMessage(), ioException);
-        } catch (Exception e) {
-            logger.error("Error loading properties" + e.getMessage(), e);
         }
     }
 }
