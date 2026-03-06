@@ -1,13 +1,10 @@
 package com.aozelce.controller;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.*;
 
-import javax.servlet.ServletException;
+import javax.servlet.*;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.*;
 import java.io.IOException;
 
 @WebServlet(
@@ -24,11 +21,10 @@ public class LogIn extends HttpServlet {
      * Route to the aws-hosted cognito login page.
      * @param req servlet request
      * @param resp servlet response
-     * @throws ServletException
      * @throws IOException
      */
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String clientId = (String) req.getServletContext().getAttribute("client.id");
         String loginUrl = (String) req.getServletContext().getAttribute("loginURL");
         String redirectUrl = (String) req.getServletContext().getAttribute("redirectURL");
@@ -38,8 +34,9 @@ public class LogIn extends HttpServlet {
             resp.sendRedirect("error.jsp");
             return;
         }
-
-        String url = loginUrl + "?response_type=code&client_id=" + clientId + "&redirect_uri=" + redirectUrl;
+        // Added profile to the scope so i can retrieve the preferred username attribute
+        // This is used to display the user's name in the navbar after logging in
+        String url = loginUrl + "?response_type=code&client_id=" + clientId + "&redirect_uri=" + redirectUrl + "&scope=openid+email+profile";
         resp.sendRedirect(url);
     }
 }

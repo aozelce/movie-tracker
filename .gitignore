@@ -47,10 +47,11 @@ src/main/resources/hibernate.cfg.xml
 src/test/resources/hibernate.cfg.xml
 
 #Log file
-logs/movie-tracker.log
+/logs/
 
 #Cognito properties
 /src/main/resources/cognito.properties
 
 #SSL certificate and key files
 /src/main/.ebextensions/https-instance.config
+
