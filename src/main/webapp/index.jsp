@@ -2,14 +2,26 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <html>
+<head>
+    <title>Movie Tracker</title>
+</head>
 <body>
+<%-- Check for userName in both request attribute (from Auth servlet) and session --%>
+<c:set var="displayName" value="${not empty userName ? userName :
+sessionScope.preferredUsername}" />
+
 <c:choose>
-    <c:when test="${empty userName}">
-        <a href = "logIn">Log in</a>
+    <c:when test="${empty displayName}">
+        <h2>Movie Tracker</h2>
+        <p>Track your movie and TV show recommendations!</p>
+        <a href="logIn">Log in</a>
     </c:when>
     <c:otherwise>
-        <h3>Welcome ${userName}</h3>
-        <a href="recommendations">View Recommendations</a>
+        <h2>Welcome, ${displayName}!</h2>
+        <nav>
+            <a href="recommendations">View Recommendations</a> |
+            <a href="logOut">Logout</a>
+        </nav>
     </c:otherwise>
 </c:choose>
 </body>
