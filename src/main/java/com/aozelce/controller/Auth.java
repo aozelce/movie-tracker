@@ -1,41 +1,29 @@
 package com.aozelce.controller;
 
-
+import com.aozelce.auth.*;
+import com.aozelce.entity.User;
+import com.aozelce.persistence.GenericDao;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.aozelce.auth.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
+import javax.servlet.*;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.IOException;
+import javax.servlet.http.*;
+import java.io.*;
 import java.math.BigInteger;
-import java.net.URI;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
+import java.net.*;
+import java.net.http.*;
 import java.nio.charset.StandardCharsets;
-import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
-import java.security.PublicKey;
+import java.security.*;
 import java.security.interfaces.RSAPublicKey;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.RSAPublicKeySpec;
-import java.util.Base64;
-import java.util.HashMap;
+import java.security.spec.*;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -92,7 +80,9 @@ public class Auth extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        logger.info("Auth servlet doGet() called - received request");
         String authCode = req.getParameter("code");
+        logger.debug("Auth code received: " + (authCode != null ? "present" : "null"));
         String userName = null;
 
         if (authCode == null) {
@@ -101,7 +91,7 @@ public class Auth extends HttpServlet {
             HttpRequest authRequest = buildAuthRequest(authCode);
             try {
                 TokenResponse tokenResponse = getToken(authRequest);
-                userName = validate(tokenResponse);
+                userName = validate(tokenResponse, req);
                 req.setAttribute("userName", userName);
             } catch (IOException e) {
                 logger.error("Error getting or validating the token", e);
@@ -143,12 +133,13 @@ public class Auth extends HttpServlet {
 
     /**
      * Get values out of the header to verify the token is legit. If it is legit, get the claims from it, such
-     * as username.
-     * @param tokenResponse
-     * @return
+     * as username. Also stores the authenticated user in the HTTP session.
+     * @param tokenResponse the token response from Cognito
+     * @param req the HTTP servlet request for session access
+     * @return the preferred username of the authenticated user
      * @throws IOException
      */
-    private String validate(TokenResponse tokenResponse) throws IOException {
+    private String validate(TokenResponse tokenResponse, HttpServletRequest req) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         CognitoTokenHeader tokenHeader = mapper.readValue(CognitoJWTParser.getHeader(tokenResponse.getIdToken()).toString(), CognitoTokenHeader.class);
 
@@ -161,7 +152,6 @@ public class Auth extends HttpServlet {
         BigInteger modulus = new BigInteger(1, org.apache.commons.codec.binary.Base64.decodeBase64(jwks.getKeys().get(0).getN()));
         BigInteger exponent = new BigInteger(1, org.apache.commons.codec.binary.Base64.decodeBase64(jwks.getKeys().get(0).getE()));
 
-        // TODO the following is "happy path", what if the exceptions are caught?
         // Create a public key
         PublicKey publicKey = null;
         try {
@@ -189,12 +179,73 @@ public class Auth extends HttpServlet {
         String userName = jwt.getClaim("cognito:username").asString();
         logger.debug("here's the username: " + userName);
 
+        // Extract the preferred_username claim from the JWT token
+        String preferredUsername = jwt.getClaim("preferred_username").asString();
+        logger.debug("preferred_username: " + preferredUsername);
+
+        // Extract the email claim from the JWT token
+        String email = jwt.getClaim("email").asString();
+        logger.debug("email: " + email);
+
         logger.debug("here are all the available claims: " + jwt.getClaims());
 
-        // TODO decide what you want to do with the info!
-        // for now, I'm just returning username for display back to the browser
+        // ===== DATABASE USER PERSISTENCE LOGIC =====
+        // The cognito:username claim contains the unique Cognito User ID (UUID format)
+        String cognitoId = userName;
 
-        return userName;
+        // Create a GenericDao instance to interact with the User table in the database
+        GenericDao<User> userDao = new GenericDao<>(User.class);
+
+        // Check if a user with this Cognito ID already exists in the database
+        List<User> existingUsers = userDao.getByPropertyEqual("cognitoId", cognitoId);
+
+        if (existingUsers.isEmpty()) {
+            // No existing user found - create a new user record in the database
+            User newUser = new User();
+            newUser.setCognitoId(cognitoId);    // Set the unique Cognito User ID
+            newUser.setEmail(email);             // Set the user's email from Cognito
+            newUser.setUsername(preferredUsername); // Set the preferred username from Cognito sign-up
+            int newUserId = userDao.insert(newUser); // Insert the new user and get the auto-generated ID
+            newUser.setId(newUserId); // Set the generated ID on the user object
+            logger.info("Created new user with ID: " + newUserId + " for cognitoId: " + cognitoId);
+
+            // Store the newly created user in the HTTP session for subsequent requests
+            HttpSession session = req.getSession();
+            session.setAttribute("user", newUser);
+            session.setAttribute("preferredUsername", preferredUsername);
+        } else {
+            // User already exists - check if any attributes need to be updated
+            User existingUser = existingUsers.get(0); // Get the first (and should be only) matching user
+            boolean needsUpdate = false; // Flag to track if any changes were made
+
+            // Check if email has changed and update if necessary
+            if (email != null && !email.equals(existingUser.getEmail())) {
+                existingUser.setEmail(email);
+                needsUpdate = true;
+            }
+
+            // Check if preferred username has changed and update if necessary
+            if (preferredUsername != null && !preferredUsername.equals(existingUser.getUsername())) {
+                existingUser.setUsername(preferredUsername);
+                needsUpdate = true;
+            }
+
+            // Only persist changes if something was actually updated
+            if (needsUpdate) {
+                userDao.saveOrUpdate(existingUser); // Save the updated user to the database
+                logger.info("Updated user with cognitoId: " + cognitoId);
+            } else {
+                logger.debug("User with cognitoId: " + cognitoId + " already exists and is up to date");
+            }
+
+            // Store the existing user in the HTTP session for subsequent requests
+            HttpSession session = req.getSession();
+            session.setAttribute("user", existingUser);
+            session.setAttribute("preferredUsername", existingUser.getUsername());
+        }
+
+        // Return the preferred username for display (fallback to email if not set)
+        return preferredUsername != null ? preferredUsername : email;
     }
 
     /** Create the auth url and use it to build the request.
@@ -228,11 +279,7 @@ public class Auth extends HttpServlet {
      * Gets the JSON Web Key Set (JWKS) for the user pool from cognito and loads it
      * into objects for easier use.
      *
-     * JSON Web Key Set (JWKS) location: https://cognito-idp.{region}.amazonaws.com/{userPoolId}/.well-known/jwks.json
-     * Demo url: https://cognito-idp.us-east-2.amazonaws.com/us-east-2_XaRYHsmKB/.well-known/jwks.json
-     *
      * @see Keys
-     * @see KeysItem
      */
     private void loadKey() {
         ObjectMapper mapper = new ObjectMapper();
