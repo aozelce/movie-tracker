@@ -25,6 +25,7 @@
     <java-jwt-version>3.4.1</java-jwt-version>
     <json-version>20170516</json-version>
     <commons-io-version>2.11.0</commons-io-version>
+    <maven-war-plugin-version>3.2.2</maven-war-plugin-version>
   </properties>
 
   <dependencies>
@@ -133,7 +134,7 @@
       <plugins>
         <plugin>
           <artifactId>maven-war-plugin</artifactId>
-          <version>3.2.2</version>
+          <version>${maven-war-plugin-version}</version>
           <configuration>
             <webResources>
               <resource>
