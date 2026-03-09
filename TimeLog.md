@@ -23,4 +23,5 @@
 | 2/27/26 | Deployed project to AWS Elastic Beanstalk instance                                                                                                                 | 2     | |
 | 2/28/26 | Watched week 7 videos.                                                                                                                                             | 1     | |
 | 3/1/26  | Implemented Cognito. Configured Certificate, deployed app to AWS fully                                                                                             | 4     | |
+|3/10/26  | Code reviewed a peer's project                                                                                                                                     | 1     | | 
 

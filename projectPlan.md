@@ -71,12 +71,9 @@
 
 - [X] Research AWS Elastic Beanstalk deployment options
 - [X] Create production `hibernate.cfg.xml` (use env vars for credentials)
-- [ ] Update all documentation for peer review
+- [X] Update all documentation for peer review
 - [X] Ensure ERD is clear and complete
 - [X] Verify all 11 MVP user stories documented
-- [ ] Clean up GitHub repository
-- [ ] **Participate in Peer Design Review session**
-- [ ] Document feedback received from peer review
 - [X] Complete Week 6 Exercise
 - [X] Weekly reflection/time log
 
@@ -84,32 +81,36 @@
 
 ## Week 7 (3/2) — Security and Authentication
 *Class: Security, Authentication | **CHECKPOINT 2 DUE 3/4***
-
+- [X] **Participate in Peer Design Review session**
+- [X] Document feedback received from peer review
 - [X] Double-check all Checkpoint 2 requirements
   - [X] Database schema created (MySQL locally)
   - [X] At least one DAO with full CRUD
   - [X] DAO fully unit tested
   - [X] Log4J2 configured and used throughout
-  - [X] No `System.out.println` anywhere
 - [X] Set up AWS Cognito User Pool (configure pool, password policy, sign-in,
   app client)
 - [X] Add AWS SDK for Java dependency to `pom.xml`
-- [ ] Create `CognitoUtil` helper class (`authenticateUser`, `registerUser`, `getUser`)
-- [ ] Create `AuthenticationFilter` (implements `Filter`)
-- [ ] Map filter in `web.xml` to protect all pages except login
-- [ ] Create session management utilities
+
+[//]: # (- [ ] Create `CognitoUtil` helper class &#40;`authenticateUser`, `registerUser`, `getUser`&#41;)
+
+[//]: # (- [ ] Create `AuthenticationFilter` &#40;implements `Filter`&#41;)
+
+[//]: # (- [ ] Map filter in `web.xml` to protect all pages except login)
+
+[//]: # (- [ ] Create session management utilities)
 - [X] Test authentication flow locally with Cognito
 - [X] Add logging for all authentication events
-- [ ] **Submit Checkpoint 2 by 3/4**
+- [X] **Submit Checkpoint 2 by 3/4**
 - [X] Complete Week 7 Exercise
-- [ ] Weekly reflection/time log
+- [X] Weekly reflection/time log
 
 ---
 
 ## Week 8 (3/9) — Web Services Intro
 *Class: Web Services Intro*
 
-- [ ] Research TMDB API v3 documentation thoroughly
+- [X] Research TMDB API v3 documentation thoroughly
 - [ ] Add Jackson dependencies to `pom.xml`
 - [ ] Create `TMDBService` class (`searchMovies`, `searchTVShows`, `getMovieDetails`, `getTVShowDetails`)
 - [ ] Create DTO classes for TMDB API responses (`TMDBSearchResultDTO`, `TMDBMovieDetailDTO`, `TMDBTVShowDetailDTO`)
