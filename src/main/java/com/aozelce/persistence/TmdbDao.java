@@ -1,22 +1,30 @@
 package com.aozelce.persistence;
 
-// Load shared properties helper
 import com.aozelce.util.PropertiesLoader;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.themoviedb.Movie;
-import org.junit.Test;
-import javax.ws.rs.client.*;
-import javax.ws.rs.core.MediaType;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
 import java.util.Properties;
 
-public class TestServiceClient implements PropertiesLoader {
 
-    @Test
-    public void testTmdbJSON() throws Exception {
+public class TmdbDao implements PropertiesLoader {
+
+
+    Movie getMovie () {
+
         // Load TMDB settings from tmdb.properties on the classpath
-        Properties props = loadProperties("/tmdb.properties");
+        Properties props;
+        try {
+            props = loadProperties("/tmdb.properties");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
         // Pull the base URL
         String baseUrl = props.getProperty("tmdb.base.url");
         // Pull the API key
@@ -31,11 +39,15 @@ public class TestServiceClient implements PropertiesLoader {
                 .queryParam("query", "The Matrix");
         // Execute the GET as JSON
         String response = target.request(MediaType.APPLICATION_JSON).get(String.class);
-        //
         ObjectMapper mapper = new ObjectMapper();
-        Movie movie = mapper.readValue(response, Movie.class);
-        String expectedMovieTitle = "The Matrix";
-        String actualMovieTitle = movie.getResults().get(0).getTitle();
-        assertEquals(expectedMovieTitle, actualMovieTitle);
+        Movie movie= null;
+        {
+            try {
+                movie = mapper.readValue(response, Movie.class);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return movie;
     }
 }
