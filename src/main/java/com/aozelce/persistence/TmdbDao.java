@@ -12,9 +12,17 @@ import javax.ws.rs.core.MediaType;
 import java.util.Properties;
 
 
+/**
+ * The type Tmdb dao.
+ */
 public class TmdbDao implements PropertiesLoader {
 
 
+    /**
+     * Gets movie.
+     *
+     * @return the movie
+     */
     Movie getMovie () {
 
         // Load TMDB settings from tmdb.properties on the classpath
