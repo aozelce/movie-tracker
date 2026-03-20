@@ -28,6 +28,7 @@ public class ApplicationStartup extends HttpServlet implements PropertiesLoader 
         super.init();
         ServletContext context = getServletContext();
         loadCognitoProperties(context);
+        loadTmdbProperties(context);
     }
 
     /**
@@ -54,6 +55,28 @@ public class ApplicationStartup extends HttpServlet implements PropertiesLoader 
             logger.error("Cannot load Cognito properties: " + ioException.getMessage(), ioException);
         } catch (Exception e) {
             logger.error("Error loading Cognito properties: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Load TMDB API properties from tmdb.properties file and store them in application scope.
+     *
+     * @param context the ServletContext to store properties in
+     */
+    private void loadTmdbProperties(ServletContext context) {
+        try {
+            // Load TMDB properties from tmdb.properties file
+            Properties properties = loadProperties("/tmdb.properties");
+
+            // Store all TMDB properties in application scope
+            context.setAttribute("tmdb.base.url", properties.getProperty("tmdb.base.url"));
+            context.setAttribute("tmdb.api.key", properties.getProperty("tmdb.api.key"));
+
+            logger.info("TMDB properties loaded successfully and stored in application scope");
+        } catch (IOException ioException) {
+            logger.error("Cannot load TMDB properties: " + ioException.getMessage(), ioException);
+        } catch (Exception e) {
+            logger.error("Error loading TMDB properties: " + e.getMessage(), e);
         }
     }
 }
