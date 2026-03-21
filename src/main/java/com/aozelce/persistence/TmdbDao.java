@@ -38,9 +38,10 @@ public class TmdbDao {
      * Gets movie from TMDB API.
      * Retrieves TMDB properties from application scope (loaded at startup) instead of reloading from file.
      *
+     * @param searchQuery the search query to find movies
      * @return the movie
      */
-    Movie getMovie() {
+    Movie getMovie(String searchQuery) {
 
         // Retrieve TMDB base URL from application scope (loaded once at startup)
         String baseUrl = (String) servletContext.getAttribute("tmdb.base.url");
@@ -62,7 +63,7 @@ public class TmdbDao {
                 .path("search")
                 .path("movie")
                 .queryParam("api_key", apiKey)
-                .queryParam("query", "The Matrix");
+                .queryParam("query", searchQuery);
 
         // Execute the GET request and retrieve response as JSON string
         String response = target.request(MediaType.APPLICATION_JSON).get(String.class);
