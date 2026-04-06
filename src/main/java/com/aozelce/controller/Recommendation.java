@@ -51,7 +51,7 @@ public class Recommendation extends HttpServlet {
             if (loginUrl != null) {
                 response.sendRedirect(loginUrl);
             } else {
-                response.sendRedirect("error.jsp");
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "User not authenticated");
             }
             return;
         }

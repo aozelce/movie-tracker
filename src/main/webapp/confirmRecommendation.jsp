@@ -1,0 +1,124 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Confirm Recommendation - Movie Tracker</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="${pageContext.request.contextPath}/">Movie Tracker</a>
+        <div class="navbar-nav ms-auto">
+            <a class="nav-link" href="${pageContext.request.contextPath}/">Home</a>
+            <a class="nav-link" href="${pageContext.request.contextPath}/recommendations">My Recommendations</a>
+            <a class="nav-link" href="${pageContext.request.contextPath}/logOut">Logout</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-10 mx-auto">
+            <h1 class="mb-4">Confirm Recommendation</h1>
+
+            <form method="POST" action="${pageContext.request.contextPath}/addRecommendation">
+                <input type="hidden" name="action" value="select-tmdb">
+
+                <!-- Media Preview Section -->
+                <fieldset class="mb-4 p-3 bg-light rounded">
+                    <legend class="fs-5 mb-3">Selected Media</legend>
+
+                    <div class="row">
+                        <div class="col-md-3">
+                            <c:choose>
+                                <c:when test="${not empty media.posterPath}">
+                                    <img src="https://image.tmdb.org/t/p/w300${media.posterPath}"
+                                         class="img-fluid rounded" alt="${media.title}">
+                                </c:when>
+                                <c:otherwise>
+                                    <div class="bg-secondary text-white rounded d-flex align-items-center justify-content-center"
+                                         style="height: 300px;">
+                                        <span>No Poster</span>
+                                    </div>
+                                </c:otherwise>
+                            </c:choose>
+                        </div>
+
+                        <div class="col-md-9">
+                            <h3>${media.title}</h3>
+                            <p class="text-muted">
+                                <span class="badge bg-secondary">${media.mediaType}</span>
+                                <c:if test="${not empty media.year}">
+                                    <span class="ms-2">${media.year}</span>
+                                </c:if>
+                            </p>
+
+                            <c:if test="${not empty media.overview}">
+                                <p><strong>Description:</strong></p>
+                                <p>${media.overview}</p>
+                            </c:if>
+
+                            <c:if test="${not empty media.genres}">
+                                <p><strong>Genres:</strong> ${media.genres}</p>
+                            </c:if>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- Hidden fields to pass media data -->
+                <input type="hidden" name="tmdbId" value="${media.tmdbId}">
+                <input type="hidden" name="title" value="${media.title}">
+                <input type="hidden" name="mediaType" value="${media.mediaType}">
+                <input type="hidden" name="year" value="${media.year}">
+                <input type="hidden" name="posterPath" value="${media.posterPath}">
+                <input type="hidden" name="overview" value="${media.overview}">
+                <input type="hidden" name="genres" value="${media.genres}">
+
+                <!-- Recommendation Details -->
+                <fieldset class="mb-4">
+                    <legend class="fs-5 mb-3">Recommendation Details</legend>
+
+                    <div class="mb-3">
+                        <label for="sourceName" class="form-label">Who recommended it?</label>
+                        <input type="text" class="form-control" id="sourceName" name="sourceName"
+                               placeholder="e.g., Friend, Movie Review, Reddit, etc."
+                               list="existingSources">
+                        <datalist id="existingSources">
+                            <c:forEach var="source" items="${sources}">
+                                <option value="${source.name}"></option>
+                            </c:forEach>
+                        </datalist>
+                        <small class="form-text text-muted">Type a new source name or select from suggestions</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="notes" class="form-label">Notes</label>
+                        <textarea class="form-control" id="notes" name="notes" rows="3"
+                                  placeholder="Why are you interested in this? What did you hear about it?..."></textarea>
+                    </div>
+
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="isWatched" name="isWatched">
+                        <label class="form-check-label" for="isWatched">Already watched?</label>
+                    </div>
+                </fieldset>
+
+                <!-- Buttons -->
+                <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                    <button type="submit" class="btn btn-primary btn-lg">Add Recommendation</button>
+                    <a href="${pageContext.request.contextPath}/addRecommendation?mode=search" class="btn btn-outline-secondary btn-lg">Back to Search</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+

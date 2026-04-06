@@ -4,6 +4,7 @@
 <html>
 <head>
     <title>Movie Tracker</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 <%-- Check for userName in both request attribute (from Auth servlet) and session --%>
@@ -19,6 +20,7 @@ sessionScope.preferredUsername}" />
     <c:otherwise>
         <h2>Welcome, ${displayName}!</h2>
         <nav>
+            <a href="addRecommendation">Add Recommendation</a> |
             <a href="recommendations">View Recommendations</a> |
             <a href="logOut">Logout</a>
         </nav>

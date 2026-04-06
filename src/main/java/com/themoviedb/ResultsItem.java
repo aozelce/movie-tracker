@@ -50,6 +50,12 @@ public class ResultsItem{
 	@JsonProperty("vote_count")
 	private int voteCount;
 
+	@JsonProperty("media_type")
+	private String mediaType;
+
+	@JsonProperty("name")
+	private String name;
+
 	/**
 	 * Set overview.
 	 *
@@ -302,6 +308,42 @@ public class ResultsItem{
 		return voteCount;
 	}
 
+	/**
+	 * Set media type.
+	 *
+	 * @param mediaType the media type
+	 */
+	public void setMediaType(String mediaType){
+		this.mediaType = mediaType;
+	}
+
+	/**
+	 * Get media type string.
+	 *
+	 * @return the string
+	 */
+	public String getMediaType(){
+		return mediaType;
+	}
+
+	/**
+	 * Set name.
+	 *
+	 * @param name the name
+	 */
+	public void setName(String name){
+		this.name = name;
+	}
+
+	/**
+	 * Get name string.
+	 *
+	 * @return the string
+	 */
+	public String getName(){
+		return name;
+	}
+
 	@Override
  	public String toString(){
 		return 
@@ -320,6 +362,8 @@ public class ResultsItem{
 			",id = '" + id + '\'' + 
 			",adult = '" + adult + '\'' + 
 			",vote_count = '" + voteCount + '\'' + 
+			",media_type = '" + mediaType + '\'' + 
+			",name = '" + name + '\'' + 
 			"}";
 		}
 }

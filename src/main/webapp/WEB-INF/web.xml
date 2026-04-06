@@ -8,10 +8,26 @@
          version="3.1">
   <display-name>Archetype Created Web Application</display-name>
 
-  <!-- Redirect 404 Not Found errors to the error.jsp page -->
+  <!-- Redirect 400 Bad Request errors to the error.jsp page -->
   <error-page>
-    <error-code>404</error-code>
-    <location>/error.jsp</location>
+      <error-code>400</error-code>
+      <location>/error.jsp</location>
   </error-page>
+  <!-- Redirect 401 Unauthorized errors to the error.jsp page -->
+  <error-page>
+      <error-code>401</error-code>
+      <location>/error.jsp</location>
+  </error-page>
+  <!-- Redirect 500 Internal Server Error to the error.jsp page -->
+  <error-page>
+      <error-code>500</error-code>
+      <location>/error.jsp</location>
+  </error-page>
+  <!-- Redirect all uncaught exceptions to the error.jsp page -->
+  <error-page>
+      <exception-type>java.lang.Exception</exception-type>
+      <location>/error.jsp</location>
+  </error-page>
+
 
 </web-app>

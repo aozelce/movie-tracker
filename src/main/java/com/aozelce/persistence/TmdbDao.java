@@ -35,13 +35,13 @@ public class TmdbDao {
     }
 
     /**
-     * Gets movie from TMDB API.
+     * Searches for a movie from TMDB API.
      * Retrieves TMDB properties from application scope (loaded at startup) instead of reloading from file.
      *
      * @param searchQuery the search query to find movies
-     * @return the movie
+     * @return Movie object with results (may contain 0 results if not found), or null if API call fails
      */
-    Movie getMovie(String searchQuery) {
+    public Movie searchMovie(String searchQuery) {
 
         // Retrieve TMDB base URL from application scope (loaded once at startup)
         String baseUrl = (String) servletContext.getAttribute("tmdb.base.url");
@@ -52,34 +52,34 @@ public class TmdbDao {
         // Validate that properties were loaded properly
         if (baseUrl == null || apiKey == null) {
             logger.error("TMDB properties were not loaded properly during application startup");
-            throw new RuntimeException("TMDB properties not available in application scope");
+            return null;
         }
 
-        // Create a Jersey client
-        Client client = ClientBuilder.newClient();
-        
-        // Build the search/movie endpoint with query and API key
-        WebTarget target = client.target(baseUrl)
-                .path("search")
-                .path("movie")
-                .queryParam("api_key", apiKey)
-                .queryParam("query", searchQuery);
-
-        // Execute the GET request and retrieve response as JSON string
-        String response = target.request(MediaType.APPLICATION_JSON).get(String.class);
-        
-        // Create an ObjectMapper to convert JSON response to Movie object
-        ObjectMapper mapper = new ObjectMapper();
-        Movie movie = null;
-        
         try {
-            // Convert JSON response to Movie object
-            movie = mapper.readValue(response, Movie.class);
-        } catch (JsonProcessingException e) {
-            logger.error("Error parsing TMDB API response", e);
-            throw new RuntimeException(e);
-        }
+            // Create a Jersey client
+            Client client = ClientBuilder.newClient();
+            
+            // Build the search/movie endpoint with query and API key
+            WebTarget target = client.target(baseUrl)
+                    .path("search")
+                    .path("movie")
+                    .queryParam("api_key", apiKey)
+                    .queryParam("query", searchQuery);
 
-        return movie;
+            // Execute the GET request and retrieve response as JSON string
+            String response = target.request(MediaType.APPLICATION_JSON).get(String.class);
+            
+            // Create an ObjectMapper to convert JSON response to Movie object
+            ObjectMapper mapper = new ObjectMapper();
+            Movie movie = mapper.readValue(response, Movie.class);
+
+            return movie;
+        } catch (JsonProcessingException e) {
+            logger.error("Error parsing TMDB API response for query: {}", searchQuery, e);
+            return null;
+        } catch (Exception e) {
+            logger.error("Error calling TMDB API for query: {}", searchQuery, e);
+            return null;
+        }
     }
 }

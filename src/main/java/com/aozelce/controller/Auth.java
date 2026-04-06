@@ -86,7 +86,7 @@ public class Auth extends HttpServlet {
         String userName = null;
 
         if (authCode == null) {
-            resp.sendRedirect("error.jsp");
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing auth code");
         } else {
             HttpRequest authRequest = buildAuthRequest(authCode);
             try {
@@ -95,10 +95,10 @@ public class Auth extends HttpServlet {
                 req.setAttribute("userName", userName);
             } catch (IOException e) {
                 logger.error("Error getting or validating the token", e);
-                resp.sendRedirect("error.jsp");
+                resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Token validation error");
             } catch (InterruptedException e) {
                 logger.error("Error getting token from Cognito oauth url", e);
-                resp.sendRedirect("error.jsp");
+                resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Token retrieval interrupted");
             }
         }
         RequestDispatcher dispatcher = req.getRequestDispatcher("index.jsp");

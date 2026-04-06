@@ -31,7 +31,7 @@ public class LogIn extends HttpServlet {
 
         if (clientId == null || loginUrl == null || redirectUrl == null) {
             logger.error("Cognito properties were not loaded properly during application startup");
-            resp.sendRedirect("error.jsp");
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Cognito properties not loaded");
             return;
         }
         // Added profile to the scope so i can retrieve the preferred username attribute
