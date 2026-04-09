@@ -1,5 +1,6 @@
 package com.aozelce.controller;
 
+import com.aozelce.persistence.TmdbDao;
 import com.aozelce.util.PropertiesLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -68,9 +69,11 @@ public class ApplicationStartup extends HttpServlet implements PropertiesLoader 
             // Load TMDB properties from tmdb.properties file
             Properties properties = loadProperties("/tmdb.properties");
 
-            // Store all TMDB properties in application scope
-            context.setAttribute("tmdb.base.url", properties.getProperty("tmdb.base.url"));
-            context.setAttribute("tmdb.api.key", properties.getProperty("tmdb.api.key"));
+            context.setAttribute("properties", properties);
+
+            TmdbDao tmdbDao = new TmdbDao(properties);
+            context.setAttribute("tmdbDao", tmdbDao);
+
 
             logger.info("TMDB properties loaded successfully and stored in application scope");
         } catch (IOException ioException) {

@@ -33,6 +33,11 @@ public class AddRecommendation extends HttpServlet {
 
     private final Logger logger = LogManager.getLogger(this.getClass());
 
+    private TmdbDao tmdbDao;
+    public void init() throws ServletException {
+        tmdbDao = (TmdbDao) getServletContext().getAttribute("tmdbDao");
+    }
+
     /**
      * Handles GET requests to display recommendation entry pages.
      * Query parameters:
@@ -190,8 +195,6 @@ public class AddRecommendation extends HttpServlet {
         // 
         query = query.trim();
 
-        // Call TMDB API
-        TmdbDao tmdbDao = new TmdbDao(getServletContext());
         Movie movieResults = tmdbDao.searchMovie(query);
 
         request.setAttribute("searchQuery", query);

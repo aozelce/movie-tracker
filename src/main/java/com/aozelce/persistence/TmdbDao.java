@@ -1,16 +1,17 @@
 package com.aozelce.persistence;
 
+import com.aozelce.util.PropertiesLoader;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.themoviedb.Movie;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.servlet.ServletContext;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import java.util.Properties;
 
 
 /**
@@ -22,17 +23,22 @@ public class TmdbDao {
     // Logger instance for debugging and error tracking
     private final Logger logger = LogManager.getLogger(this.getClass());
 
-    // Stores the ServletContext for accessing application-scoped TMDB properties
-    private final ServletContext servletContext;
+    private Properties properties;
 
     /**
-     * Constructor that requires ServletContext to access TMDB properties loaded at startup
-     *
-     * @param servletContext the ServletContext containing TMDB properties
+     * Instantiates a new Tmdb dao.
      */
-    public TmdbDao(ServletContext servletContext) {
-        this.servletContext = servletContext;
-    }
+    public TmdbDao() {};
+
+    /**
+     * Instantiates a new Tmdb dao.
+     *
+     * @param properties the properties
+     */
+    public TmdbDao(Properties properties) {
+        this();
+        this.properties = properties;
+    };
 
     /**
      * Searches for a movie from TMDB API.
@@ -44,10 +50,10 @@ public class TmdbDao {
     public Movie searchMovie(String searchQuery) {
 
         // Retrieve TMDB base URL from application scope (loaded once at startup)
-        String baseUrl = (String) servletContext.getAttribute("tmdb.base.url");
+        String baseUrl = properties.getProperty("tmdb.base.url");
         
         // Retrieve TMDB API key from application scope (loaded once at startup)
-        String apiKey = (String) servletContext.getAttribute("tmdb.api.key");
+        String apiKey = properties.getProperty("tmdb.api.key");
 
         // Validate that properties were loaded properly
         if (baseUrl == null || apiKey == null) {
