@@ -11,7 +11,7 @@
     <div class="container-fluid">
         <a class="navbar-brand" href="${pageContext.request.contextPath}/">Movie Tracker</a>
         <div>
-            <a href="${pageContext.request.contextPath}/tmdbSearch" class="btn btn-outline-primary btn-sm">Search TMDB</a>
+            <a href="${pageContext.request.contextPath}/addRecommendation" class="btn btn-outline-primary btn-sm">Search TMDB</a>
             <a href="${pageContext.request.contextPath}/addRecommendation?page=manual" class="btn btn-outline-secondary btn-sm">Add Manually</a>
             <a href="${pageContext.request.contextPath}/logOut" class="btn btn-outline-danger btn-sm">Logout</a>
         </div>
@@ -21,7 +21,9 @@
     <h2>My Recommendations</h2>
     <c:choose>
         <c:when test="${empty recommendations}">
-            <div class="alert alert-info mt-4">No recommendations yet. <a href="${pageContext.request.contextPath}/tmdbSearch">Add one</a>.</div>
+            <div class="alert alert-info mt-4">No recommendations yet. <a
+                    href="${pageContext.request.contextPath}/addRecommendation">Add one</a>.
+            </div>
         </c:when>
         <c:otherwise>
             <table class="table table-bordered table-sm mt-3">
