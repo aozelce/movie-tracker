@@ -2,10 +2,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <html>
-<head>
-    <title>Movie Tracker</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
+<c:set var="pageTitle" value="Movie Tracker"/>
+<jsp:include page="/head.jsp"/>
+
 <body>
 <%-- Check for userName in both request attribute (from Auth servlet) and session --%>
 <c:set var="displayName" value="${not empty userName ? userName :

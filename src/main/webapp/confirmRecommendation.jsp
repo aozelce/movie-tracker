@@ -2,12 +2,9 @@
 
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Confirm Recommendation - Movie Tracker</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
+<c:set var="pageTitle" value="Confirm Recommendation - Movie Tracker"/>
+<jsp:include page="/head.jsp"/>
+
 <body>
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">

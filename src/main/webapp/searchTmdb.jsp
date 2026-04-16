@@ -1,10 +1,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Search TMDB</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
+<c:set var="pageTitle" value="Search TMDB"/>
+<jsp:include page="/head.jsp"/>
+
 <body>
 <nav class="navbar navbar-light bg-light mb-3">
     <div class="container-fluid">

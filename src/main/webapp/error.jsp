@@ -1,7 +1,9 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<!DOCTYPE html>
 <html>
-<head>
-    <title>Error</title>
-</head>
+<c:set var="pageTitle" value="Error"/>
+<jsp:include page="/head.jsp"/>
+
 <body>
     <h2>An Error Occurred</h2>
     <p>
