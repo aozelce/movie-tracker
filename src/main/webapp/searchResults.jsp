@@ -44,7 +44,9 @@
                                 <input type="hidden" name="tmdbId" value="${result.id}">
                                 <input type="hidden" name="title" value="${not empty result.title ? result.title : result.name}">
                                 <input type="hidden" name="mediaType" value="${not empty result.mediaType ? result.mediaType : 'movie'}">
-                                <input type="hidden" name="year" value="${result.releaseDate}">
+                                <!-- substring(0,4) gets the first 4 characters (the year) from releaseDate -->
+                                <input type="hidden" name="year"
+                                       value="${not empty result.releaseDate and result.releaseDate.length() >= 4 ? result.releaseDate.substring(0,4) : ''}">
                                 <input type="hidden" name="posterPath" value="${result.posterPath}">
                                 <input type="hidden" name="overview" value="${result.overview}">
                                 <button type="submit" class="btn btn-primary btn-sm">Select</button>
