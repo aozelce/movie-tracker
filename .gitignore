@@ -41,6 +41,7 @@ build/
 
 #Database config files
 src/main/resources/database.properties
+/src/test/resources/database.properties
 
 # Hibernate config
 src/main/resources/hibernate.cfg.xml
@@ -57,3 +58,4 @@ src/test/resources/hibernate.cfg.xml
 
 #TMDB API
 /src/main/resources/tmdb.properties
+
