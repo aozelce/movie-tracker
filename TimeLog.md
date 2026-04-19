@@ -1,4 +1,4 @@
-`# Time Log
+# Time Log
 
 | Date    | Task                                                                                                                                                               | Hours | Notes|
 |---------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------|----|
@@ -23,5 +23,12 @@
 | 2/27/26 | Deployed project to AWS Elastic Beanstalk instance                                                                                                                 | 2     | |
 | 2/28/26 | Watched week 7 videos.                                                                                                                                             | 1     | |
 | 3/1/26  | Implemented Cognito. Configured Certificate, deployed app to AWS fully                                                                                             | 4     | |
-|3/10/26  | Code reviewed a peer's project                                                                                                                                     | 1     | | 
-
+| 3/10/26 | Code reviewed a peer's project                                                                                                                                     | 1     | | 
+| 3/18/26 | Added Javadoc comments, implemented API DAO, generated Movie and ResultsItem POJOs from TMDB API, created test for JSON response validation. | 3 | |
+| 3/21/26 | Added TMDB properties loading, refactored TmdbDao, added search query parameter, updated navigation and recommendations page. | 4 | |
+| 3/29/26 | Added rolling file appender to log4j2, updated index.jsp, improved user greeting and navigation links, updated recommendations page. | 2 | |
+| 4/06/26 | Added REST API endpoints for movie resource, added JSON support, updated movie endpoints, included dependencies, added API response test screenshots. | 5 | |
+| 4/09/26 | Refactored TmdbDao to use injected properties, updated AddRecommendation, added unit tests for movie search, updated navigation links. | 3 | |
+| 4/16/26 | Refactored JSP files to use a shared head.jsp. | 2 | |
+| 4/19/26 | Updated year input in searchResults.jsp to extract year from releaseDate. | 1 | |
+| 4/20/26 | Moved test database config, updated .gitignore, general project maintenance. | 1 | |

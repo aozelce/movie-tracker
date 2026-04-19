@@ -111,105 +111,99 @@
 *Class: Web Services Intro*
 
 - [X] Research TMDB API v3 documentation thoroughly
-- [ ] Add Jackson dependencies to `pom.xml`
-- [ ] Create `TMDBService` class (`searchMovies`, `searchTVShows`, `getMovieDetails`, `getTVShowDetails`)
-- [ ] Create DTO classes for TMDB API responses (`TMDBSearchResultDTO`, `TMDBMovieDetailDTO`, `TMDBTVShowDetailDTO`)
-- [ ] Implement proper error handling for API calls (rate limits, network failures, invalid keys)
-- [ ] Map TMDB response data to `Media` entity
-- [ ] Create `MediaService` class (`searchAndSave`, `getOrCreateMedia`)
-- [ ] Write unit tests for `TMDBService`
-- [ ] Test API integration manually
-- [ ] Sign up for team project
-- [ ] Complete Week 8 Exercise
-- [ ] Weekly reflection/time log
+- [X] Add Jackson dependencies to `pom.xml`
+- [X] Create `TMDBService` class (`searchMovies`, `searchTVShows`, 
+  `getMovieDetails`, `getTVShowDetails`)
+- [X] Implement proper error handling for API calls (rate limits, network 
+  failures, invalid keys)
+- [x] Map TMDB response data to `Media` entity
+- [X] Write unit tests for `TMDBService`
+- [X] Test API integration manually
+- [X] Sign up for team project
+- [X] Complete Week 8 Exercise
+- [X] Weekly reflection/time log
 
-- [ ] Add Project Lombok annotations (`@Data`, `@NoArgsConstructor`, `@AllArgsConstructor`) **OPTIONAL**
 ---
 
 ## Week 9 (3/23) — RESTful Web Services
 *Class: RESTful Web Services | **CHECKPOINT 3 DUE 3/25***
 
-- [ ] Create `UserService`
-- [ ] Create `SourceService` (`createSource`, `getUserSources`, `updateSource`, `deleteSource`)
-- [ ] Create `RecommendationService` (`createFromTMDB`, `createManual`, `updateRecommendation`, `getByUserId`, `toggleWatched`, `deleteRecommendation`)
-- [ ] Add Log4J2 logging to all service methods
-- [ ] Write unit tests for services
-- [ ] Create simple JSP to display recommendations list (basic, for checkpoint)
-- [ ] Create basic servlet to fetch and forward data to JSP
-- [ ] Package application as WAR file
-- [ ] Deploy to AWS Elastic Beanstalk
-  - [ ] Create Elastic Beanstalk environment
-  - [ ] Upload WAR file
-  - [ ] SSH into EC2 and install MySQL
-  - [ ] Create production database schema on EC2
-  - [ ] Configure environment variables
-  - [ ] Update `hibernate.cfg.xml` for production
-  - [ ] Test deployment
-- [ ] Verify authentication works in production
-- [ ] Add deployed link to indie project list in student repo
-- [ ] **Submit Checkpoint 3 by 3/25**
-- [ ] Complete Week 9 Exercise
-- [ ] Start team project repository setup
-- [ ] Weekly reflection/time log
+- [X] Create `UserService`
+- [X] Create `SourceService` (`createSource`, `getUserSources`, 
+  `updateSource`, `deleteSource`)
+- [X] Create `RecommendationService` (`createFromTMDB`, `createManual`, 
+  `updateRecommendation`, `getByUserId`, `toggleWatched`, `deleteRecommendation`)
+- [X] Add Log4J2 logging to all service methods
+- [X] Write unit tests for services
+- [X] Create simple JSP to display recommendations list (basic, for checkpoint)
+- [X] Create basic servlet to fetch and forward data to JSP
+- [X] Package application as WAR file
+- [X] Deploy to AWS Elastic Beanstalk
+  - [X] Create Elastic Beanstalk environment
+  - [X] Upload WAR file
+  - [X] SSH into EC2 and install MySQL
+  - [X] Create production database schema on EC2
+  - [X] Configure environment variables
+  - [X] Update `hibernate.cfg.xml` for production
+  - [X] Test deployment
+- [X] Verify authentication works in production
+- [X] Add deployed link to indie project list in student repo
+- [X] **Submit Checkpoint 3 by 3/25**
+- [X] Complete Week 9 Exercise
+- [X] Start team project repository setup
+- [X] Weekly reflection/time log
 
 ---
 
 ## Week 10 (3/30) — Work Week
 *Class: Work Week*
 
-- [ ] Create `SearchTMDBServlet`
-- [ ] Create `AddRecommendationServlet`
-- [ ] Create `EditRecommendationServlet`
-- [ ] Create `DeleteRecommendationServlet`
-- [ ] Create `ListRecommendationsServlet`
-- [ ] Create `ToggleWatchedServlet`
-- [ ] Create `AddSourceServlet`
-- [ ] Create `EditSourceServlet`
-- [ ] Create `DeleteSourceServlet`
-- [ ] Create `ListSourcesServlet`
-- [ ] Implement input validation (required fields, data types, error messages)
-- [ ] Add error handling to all servlets (try-catch, error page forwarding, Log4J2)
-- [ ] Configure servlet mappings in `web.xml`
-- [ ] Test all servlets manually
-- [ ] Complete Week 10 Branching Activities (2)
-- [ ] Weekly reflection/time log
+- [X] Create `SearchTMDBServlet`
+- [X] Create `AddRecommendationServlet`
+- [X] Implement input validation (required fields, data types, error messages)
+- [X] Add error handling to all servlets (try-catch, error page forwarding, 
+  Log4J2)
+- [X] Configure servlet mappings in `web.xml`
+- [X] Test all servlets manually
+- [X] Complete Week 10 Branching Activities (2)
+- [X] Weekly reflection/time log
 
 ---
 
 ## Week 11 (4/6) — Work Week
 *Class: Work Week*
 
-- [ ] Create base JSP template with Bootstrap 5 (`header.jsp`, `footer.jsp`)
-- [ ] Create `login.jsp`
-- [ ] Create `recommendations.jsp` (US-005, US-008)
-- [ ] Create `addRecommendation.jsp` (US-003, US-004) with TMDB search + AJAX
-- [ ] Create `editRecommendation.jsp` (US-010)
-- [ ] Create `sources.jsp` (US-006) with add/edit/delete and color picker
-- [ ] Add JavaScript for dynamic behavior (AJAX, form validation, delete modals)
-- [ ] Test all pages
-- [ ] Weekly reflection/time log
+- [X] Create base JSP template with Bootstrap 5 (`header.jsp`, `footer.jsp`)
+- [X] Create `login.jsp`
+- [X] Create `recommendations.jsp` (US-005, US-008)
+- [X] Create `addRecommendation.jsp` (US-003, US-004) with TMDB search + AJAX
+- [X] Test all pages
+- [X] Weekly reflection/time log
 
 ---
 
 ## Week 12 (4/13) — Team Project Presentations
 *Class: Team Project Presentations | **Team Projects due 4/15***
 
-- [ ] Complete team project and presentation
-- [ ] Polish individual project UI with Bootstrap
-- [ ] Add loading spinners for async operations
-- [ ] Implement success/error message alerts
-- [ ] Test mobile responsiveness
-- [ ] Cross-browser testing (Chrome, Firefox, Safari)
-- [ ] Fix any bugs discovered
-- [ ] Weekly reflection/time log
+- [X] Complete team project and presentation
+- [X] Cross-browser testing (Chrome, Firefox, Safari)
+- [X] Fix any bugs discovered
+- [X] Weekly reflection/time log
 
 ---
 
 ## Week 13 (4/20) — Asynchronous Messaging
+
+- [ ] Create `EditRecommendationServlet`
+- [ ] Create `DeleteRecommendationServlet`
+- [ ] Create `ToggleWatchedServlet`
+
+- [ ] Create `editRecommendation.jsp` (US-010)
+- [ ] Polish individual project UI with Bootstrap
+
 *Class: Asynchronous Messaging*
 
 - [ ] Implement client-side filtering/sorting (watched/unwatched, date, title)
-- [ ] Add pagination (if time permits)
 - [ ] Performance optimization (lazy load images, cache TMDB results)
 - [ ] Accessibility improvements (ARIA labels, keyboard nav, alt text)
 - [ ] Run full unit test suite
