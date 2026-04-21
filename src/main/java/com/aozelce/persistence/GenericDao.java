@@ -169,4 +169,22 @@ public class GenericDao<T> {
         return list;
     }
 
+    /**
+     * Retrieves a list of entities of type T from the database where a specified property matches a given object value.
+     *
+     * @param propertyName the name of the property to be matched
+     * @param value the object value to be matched against the specified property
+     * @return a List of entities of type T that match the specified property and value
+     */
+    public List<T> getByPropertyEqual(String propertyName, Object value) {
+        Session session = getSession();
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<T> query = builder.createQuery(type);
+        Root<T> root = query.from(type);
+        query.where(builder.equal(root.get(propertyName), value));
+        List<T> list = session.createQuery(query).getResultList();
+        session.close();
+        return list;
+    }
+
 }
