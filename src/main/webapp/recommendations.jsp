@@ -35,6 +35,7 @@
                     <th>Source</th>
                     <th>Notes</th>
                     <th>Watched</th>
+                    <th>Edit</th>
                     <th>Delete</th>
                 </tr>
                 </thead>
@@ -49,6 +50,12 @@
                         <td>${rec.notes}</td>
                         <td>${rec.watched ? 'Yes' : 'No'}</td>
                         <td>
+                            <a href="${pageContext.request.contextPath}/editRecommendation?id=${rec.id}"
+                               class="btn btn-warning btn-sm">
+                                Edit
+                            </a>
+                        </td>
+                        <td>
                             <a href="${pageContext.request.contextPath}/deleteRecommendation?id=${rec.id}"
                                class="btn btn-danger btn-sm"
                                onclick="return confirm('Are you sure you want to delete this recommendation?');">
@@ -62,5 +69,6 @@
         </c:otherwise>
     </c:choose>
 </div>
+<jsp:include page="/footer.jsp"/>
 </body>
 </html>
