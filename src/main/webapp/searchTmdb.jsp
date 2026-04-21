@@ -27,5 +27,6 @@
         <div class="alert alert-warning">${message}</div>
     </c:if>
 </div>
+<jsp:include page="/footer.jsp"/>
 </body>
 </html>

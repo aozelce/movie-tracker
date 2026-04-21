@@ -10,5 +10,6 @@
         An unexpected error occurred. Please try again later or contact support if the problem persists.
     </p>
     <p><a href="logIn">Return to Login</a></p>
+<jsp:include page="/footer.jsp"/>
 </body>
 </html>

@@ -51,5 +51,6 @@
         <button type="submit" class="btn btn-primary btn-sm">Add Recommendation</button>
     </form>
 </div>
+<jsp:include page="/footer.jsp"/>
 </body>
 </html>
