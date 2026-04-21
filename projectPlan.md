@@ -194,11 +194,11 @@
 
 ## Week 13 (4/20) — Asynchronous Messaging
 
-- [ ] Create `EditRecommendationServlet`
-- [ ] Create `DeleteRecommendationServlet`
+- [X] Create `EditRecommendationServlet`
+- [X] Create `DeleteRecommendationServlet`
 - [ ] Create `ToggleWatchedServlet`
 
-- [ ] Create `editRecommendation.jsp` (US-010)
+- [X] Create `editRecommendation.jsp` (US-010)
 - [ ] Polish individual project UI with Bootstrap
 
 *Class: Asynchronous Messaging*
