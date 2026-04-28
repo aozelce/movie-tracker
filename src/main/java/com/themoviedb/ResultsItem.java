@@ -1,11 +1,14 @@
+
 package com.themoviedb;
 
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * The type Results item.
  */
+@JsonIgnoreProperties(ignoreUnknown = true) //If TMDB adds new fields, don’t break my app.
 public class ResultsItem{
 
 	@JsonProperty("overview")

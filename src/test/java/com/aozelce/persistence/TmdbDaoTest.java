@@ -29,8 +29,6 @@ class TmdbDaoTest {
         properties.load(getClass().getResourceAsStream("/tmdb.properties"));
         // Initialize the TmdbDao with the loaded properties
         dao = new TmdbDao(properties);
-        // Search for the movie "The Crack: Inception" and assign the result to the movie variable
-        movie = dao.searchMovie("The Crack: Inception");
     }
 
     /**
@@ -38,16 +36,29 @@ class TmdbDaoTest {
      */
     @Test
     void searchMovie() {
+        // Search for movies with the keyword "Matrix"
+        movie = dao.searchMovie("Matrix");
+
         // Assert that the movie object is not null
         assertNotNull(movie);
+
         // Get the list of ResultsItem objects from the movie
         List<ResultsItem> results = movie.getResults();
-        // Iterate through each ResultsItem in the results list
+        assertNotNull(results);
+        assertFalse(results.isEmpty());
+
+        // Flag to indicate if a result with the exact title "Matrix" is found
+        boolean found = false;
+
+        // Iterate through the results to find a match
         for (ResultsItem result : results) {
-            // Get the title of the current result
-            String title = result.getTitle();
-            // Assert that the title matches the expected movie title
-            assertEquals("The Crack: Inception", title);
+            if ("Matrix".equals(result.getTitle())) {
+                found = true;
+                break;
+            }
         }
+
+        // Assert that at least one result with the title "Matrix" exists
+        assertTrue(found);
     }
 }
