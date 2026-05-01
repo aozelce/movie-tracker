@@ -8,7 +8,7 @@
 <body>
 <%-- Check for userName in both request attribute (from Auth servlet) and session --%>
 <c:set var="displayName" value="${not empty userName ? userName :
-sessionScope.preferredUsername}" />
+sessionScope.user.username}" />
 
 <c:choose>
     <c:when test="${empty displayName}">

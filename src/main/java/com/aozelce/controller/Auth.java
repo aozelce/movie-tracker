@@ -212,7 +212,6 @@ public class Auth extends HttpServlet {
             // Store the newly created user in the HTTP session for subsequent requests
             HttpSession session = req.getSession();
             session.setAttribute("user", newUser);
-            session.setAttribute("preferredUsername", preferredUsername);
         } else {
             // User already exists - check if any attributes need to be updated
             User existingUser = existingUsers.get(0); // Get the first (and should be only) matching user
