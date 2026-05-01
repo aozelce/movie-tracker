@@ -1,5 +1,6 @@
 package com.aozelce.controller;
 
+import com.aozelce.auth.AuthRedirector;
 import com.aozelce.entity.User;
 import com.aozelce.persistence.GenericDao;
 import com.aozelce.persistence.TmdbDao;
@@ -60,25 +61,15 @@ public class AddRecommendation extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // Validate user is authenticated
-        User user = UserSessionHelper.getUserFromSession(request);
-        // Redirect unauthenticated users
-        if (user == null) {
-            String loginUrl = (String) getServletContext().getAttribute("loginURL");
-            if (loginUrl != null) {
-                response.sendRedirect(loginUrl);
-            } else {
-                response.sendRedirect("error.jsp");
-            }
-            return;
+        // Check if the user is authenticated. If not, the method handles redirection and returns false.
+        if (!AuthRedirector.redirectIfUnauthenticated(request, response)) {
+            return; // Exit if the user is not authenticated (redirected already)
         }
 
         String page = request.getParameter("page");
         if (page == null || page.isEmpty()) {
             page = "tmdb-search";
         }
-
-        logger.info("AddRecommendation GET: page={}, user={}", page, user.getId());
 
         // The 'page' parameter determines which add recommendation flow the user wants:
         // This switch statement routes the request to the correct JSP based on the page parameter.
@@ -117,17 +108,9 @@ public class AddRecommendation extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // Validate user is authenticated
-        User user = UserSessionHelper.getUserFromSession(request);
-        // Redirect unauthenticated users
-        if (user == null) {
-            String loginUrl = (String) getServletContext().getAttribute("loginURL");
-            if (loginUrl != null) {
-                response.sendRedirect(loginUrl);
-            } else {
-                response.sendRedirect("error.jsp");
-            }
-            return;
+        // Check if the user is authenticated. If not, the method handles redirection and returns false.
+        if (!AuthRedirector.redirectIfUnauthenticated(request, response)) {
+            return; // Exit if the user is not authenticated (redirected already)
         }
 
         String action = request.getParameter("action");
