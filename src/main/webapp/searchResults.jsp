@@ -49,6 +49,7 @@
                                        value="${not empty result.releaseDate and result.releaseDate.length() >= 4 ? result.releaseDate.substring(0,4) : ''}">
                                 <input type="hidden" name="posterPath" value="${result.posterPath}">
                                 <input type="hidden" name="overview" value="${result.overview}">
+                                <input type="hidden" name="genres" value="${result.genres}">
                                 <button type="submit" class="btn btn-primary btn-sm">Select</button>
                             </form>
                         </td>
