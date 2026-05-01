@@ -1,4 +1,3 @@
-
 package com.themoviedb;
 
 import java.util.List;
@@ -58,6 +57,9 @@ public class ResultsItem{
 
 	@JsonProperty("name")
 	private String name;
+
+	@JsonProperty("genres")
+	private String genres;
 
 	/**
 	 * Set overview.
@@ -346,6 +348,24 @@ public class ResultsItem{
 	public String getName(){
 		return name;
 	}
+
+	/**
+	 * Sets genres.
+	 *
+	 * @param genres the genres
+	 */
+	public void setGenres(String genres) {
+        this.genres = genres;
+    }
+
+	/**
+	 * Gets genres.
+	 *
+	 * @return the genres
+	 */
+	public String getGenres() {
+        return genres;
+    }
 
 	@Override
  	public String toString(){

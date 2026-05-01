@@ -1,23 +1,25 @@
 package com.aozelce.controller;
 
-import com.aozelce.entity.Media;
-import com.aozelce.entity.Recommendation;
 import com.aozelce.entity.User;
 import com.aozelce.persistence.GenericDao;
 import com.aozelce.persistence.TmdbDao;
+import com.aozelce.service.TmdbGenreService;
 import com.themoviedb.Movie;
+import com.themoviedb.ResultsItem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.*;
 import java.io.IOException;
+import com.aozelce.entity.Media;
+import com.aozelce.entity.Recommendation;
 import java.util.List;
+import com.aozelce.entity.Source;
+import com.aozelce.auth.UserSessionHelper;
+
+
 
 /**
  * Servlet responsible for handling recommendation addition flows.
@@ -34,8 +36,14 @@ public class AddRecommendation extends HttpServlet {
     private final Logger logger = LogManager.getLogger(this.getClass());
 
     private TmdbDao tmdbDao;
+    private TmdbGenreService tmdbGenreService;
+
     public void init() throws ServletException {
+        // Retrieve the movie service from the app scope
         tmdbDao = (TmdbDao) getServletContext().getAttribute("tmdbDao");
+        // Retrieve the genre service from the app scope
+        tmdbGenreService = (TmdbGenreService) getServletContext().getAttribute(
+                "genreService");
     }
 
     /**
@@ -53,13 +61,7 @@ public class AddRecommendation extends HttpServlet {
             throws ServletException, IOException {
 
         // Validate user is authenticated
-        HttpSession session = request.getSession(false);
-        User user = null;
-
-        if (session != null) {
-            user = (User) session.getAttribute("user");
-        }
-
+        User user = UserSessionHelper.getUserFromSession(request);
         // Redirect unauthenticated users
         if (user == null) {
             String loginUrl = (String) getServletContext().getAttribute("loginURL");
@@ -86,10 +88,10 @@ public class AddRecommendation extends HttpServlet {
         try {
             switch (page) {
                 case "tmdb-search":
-                    showTmdbSearchPage(request, response, user);
+                    showTmdbSearchPage(request, response);
                     break;
                 case "manual":
-                    showManualPage(request, response, user);
+                    showManualPage(request, response);
                     break;
                 default:
                     logger.warn("Unknown page: {}", page);
@@ -116,13 +118,7 @@ public class AddRecommendation extends HttpServlet {
             throws ServletException, IOException {
 
         // Validate user is authenticated
-        HttpSession session = request.getSession(false);
-        User user = null;
-
-        if (session != null) {
-            user = (User) session.getAttribute("user");
-        }
-
+        User user = UserSessionHelper.getUserFromSession(request);
         // Redirect unauthenticated users
         if (user == null) {
             String loginUrl = (String) getServletContext().getAttribute("loginURL");
@@ -133,21 +129,19 @@ public class AddRecommendation extends HttpServlet {
             }
             return;
         }
-        
-        // Decide what to do based on the 'action' parameter from the form.
-        // Handles TMDB search, selecting a TMDB result, or manual add. If unknown, returns 400.
+
         String action = request.getParameter("action");
 
         try {
             switch (action) {
                 case "search-tmdb":
-                    handleTmdbSearch(request, response, user);
+                    handleTmdbSearch(request, response);
                     break;
                 case "select-tmdb":
-                    handleSelectTmdb(request, response, user);
+                    handleSelectTmdb(request, response);
                     break;
                 case "add-manual":
-                    handleAddManual(request, response, user);
+                    handleAddManual(request, response);
                     break;
                 default:
                     logger.warn("Unknown action: {}", action);
@@ -162,8 +156,9 @@ public class AddRecommendation extends HttpServlet {
     /**
      * Displays the TMDB search page.
      */
-    private void showTmdbSearchPage(HttpServletRequest request, HttpServletResponse response, User user)
+    private void showTmdbSearchPage(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        User user = UserSessionHelper.getUserFromSession(request);
         request.setAttribute("user", user);
         RequestDispatcher dispatcher = request.getRequestDispatcher("/searchTmdb.jsp");
         dispatcher.forward(request, response);
@@ -172,8 +167,9 @@ public class AddRecommendation extends HttpServlet {
     /**
      * Displays the manual entry page.
      */
-    private void showManualPage(HttpServletRequest request, HttpServletResponse response, User user)
+    private void showManualPage(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        User user = UserSessionHelper.getUserFromSession(request);
         request.setAttribute("user", user);
         RequestDispatcher dispatcher = request.getRequestDispatcher("/addManually.jsp");
         dispatcher.forward(request, response);
@@ -184,28 +180,27 @@ public class AddRecommendation extends HttpServlet {
      * POST parameters:
      *   query: search query for TMDB
      */
-    private void handleTmdbSearch(HttpServletRequest request, HttpServletResponse response, User user)
+    private void handleTmdbSearch(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        User user = UserSessionHelper.getUserFromSession(request);
         String query = request.getParameter("query");
-
         if (query == null || query.trim().isEmpty()) {
             throw new IllegalArgumentException("Search query is required");
         }
-        // 
         query = query.trim();
-
         Movie movieResults = tmdbDao.searchMovie(query);
-
         request.setAttribute("searchQuery", query);
         request.setAttribute("user", user);
-
         if (movieResults == null || movieResults.getResults() == null || movieResults.getResults().isEmpty()) {
             request.setAttribute("message", "No results found for: " + query);
         } else {
+            // Map genre IDs to names for each result using dynamic TMDB API
+            for (ResultsItem result : movieResults.getResults()) {
+                String genreNames = tmdbGenreService.getGenreNames(result.getGenreIds());
+                result.setGenres(genreNames);
+            }
             request.setAttribute("results", movieResults.getResults());
         }
-
         RequestDispatcher dispatcher = request.getRequestDispatcher("/searchResults.jsp");
         dispatcher.forward(request, response);
     }
@@ -224,8 +219,9 @@ public class AddRecommendation extends HttpServlet {
      *   - notes: Notes (optional, when saving)
      *   - isWatched: Already watched (optional, when saving)
      */
-    private void handleSelectTmdb(HttpServletRequest request, HttpServletResponse response, User user)
+    private void handleSelectTmdb(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        User user = UserSessionHelper.getUserFromSession(request);
 
         String tmdbIdStr = request.getParameter("tmdbId");
         if (tmdbIdStr == null || tmdbIdStr.isEmpty()) {
@@ -238,41 +234,35 @@ public class AddRecommendation extends HttpServlet {
         // Check if this is the final submit (has sourceName/notes) or initial selection
         String sourceName = request.getParameter("sourceName");
         String notes = request.getParameter("notes");
-        
+
         // If sourceName or notes are present, this is a final submission - save the recommendation
         if (sourceName != null || notes != null) {
-            
             // Create or retrieve Media from TMDB data
             Media media = createMediaFromRequest(request, tmdbId);
-            
             if (media == null) {
                 throw new RuntimeException("Failed to create Media from TMDB selection");
             }
-            
             // Check if media already exists in database
             GenericDao<Media> mediaDao = new GenericDao<>(Media.class);
             List<Media> existingMedia = mediaDao.getByPropertyEqual("tmdbId", tmdbId);
-            
             if (existingMedia != null && !existingMedia.isEmpty()) {
                 media = existingMedia.get(0);
             } else {
                 int mediaId = mediaDao.insert(media);
                 media.setId(mediaId);
             }
-            
             // Create recommendation
             createRecommendation(request, user, media);
-            
             // Redirect to recommendations list
             response.sendRedirect("recommendations");
             return;
         }
-        
+
         // This is initial selection - show confirmation page
         Media media = createMediaFromRequest(request, tmdbId);
         request.setAttribute("media", media);
         request.setAttribute("user", user);
-        
+
         RequestDispatcher dispatcher = request.getRequestDispatcher("/confirmRecommendation.jsp");
         dispatcher.forward(request, response);
     }
@@ -290,8 +280,9 @@ public class AddRecommendation extends HttpServlet {
      *   - notes: Recommendation notes (optional)
      *   - isWatched: Already watched (optional)
      */
-    private void handleAddManual(HttpServletRequest request, HttpServletResponse response, User user)
+    private void handleAddManual(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        User user = UserSessionHelper.getUserFromSession(request);
 
         String title = request.getParameter("title");
         String mediaType = request.getParameter("mediaType");
@@ -302,10 +293,15 @@ public class AddRecommendation extends HttpServlet {
 
         logger.info("Creating manual recommendation: title={}, mediaType={}", title, mediaType);
 
-        // Create Media entry (no TMDB ID for manual entries)
+        // Create Media entry
         Media media = new Media();
         media.setTitle(title.trim());
         media.setMediaType(mediaType.trim());
+        // Assign a unique negative tmdbId for manual entries to avoid
+        // duplicate key errors
+        //Reference : https://stackoverflow.com/questions/34607427/creating
+        // -unique-request-id-for-each-request-using-timemillis-method-in-servlet
+        media.setTmdbId((int)(-1 * System.currentTimeMillis() / 1000));
 
         // Optional fields
         String yearStr = request.getParameter("year");
@@ -325,7 +321,7 @@ public class AddRecommendation extends HttpServlet {
         GenericDao<Media> mediaDao = new GenericDao<>(Media.class);
         int mediaId = mediaDao.insert(media);
         media.setId(mediaId);
-        
+
         // Create recommendation
         createRecommendation(request, user, media);
 
@@ -392,7 +388,7 @@ public class AddRecommendation extends HttpServlet {
                 GenericDao<com.aozelce.entity.Source> sourceDao = new GenericDao<>(com.aozelce.entity.Source.class);
                 
                 // Try to find existing source with this name for the user
-                List<com.aozelce.entity.Source> existingSources = sourceDao.getByPropertyEqual("name", sourceName);
+                List<Source> existingSources = sourceDao.getByPropertyEqual("name", sourceName);
                 com.aozelce.entity.Source source = null;
                 
                 if (existingSources != null && !existingSources.isEmpty()) {
