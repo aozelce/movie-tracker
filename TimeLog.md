@@ -37,3 +37,7 @@
 | 4/21/26 | Added edit recommendation functionlity with authentication and ownership validation. Updated recommendations page to include edit option.                          | 4     | |
 | 4/28/26 | Live peer review 2                                                                                                                                                 | 3     | |
 | 4/29/26 | Implemented Jackson json ignore properties to prevent API response changes breaking app                                                                            | 1     | |
+| 4/30/26 | Fixed genre functionality, added a separate API call to retrieve genre names from genre IDs                                                                        | 0.25  | |
+| 5/1/26  | Modularized session user operations, refactored AddRecommendation servlet methods to elminate duplicate code blocks.                                               | 2     | |
+| 5/1/26  | Refactored AddRecommendation servlet to use AuthRedirector for authentication checks and extracted redirection logic into a reusable utility class.                | 1     | |
+| 5/1/26  | Made miscellenous changes based on peer review suggestions                                                                                                         | 2     | |
