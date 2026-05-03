@@ -203,37 +203,35 @@
 
 *Class: Asynchronous Messaging*
 
-- [ ] Implement client-side filtering/sorting (watched/unwatched, date, title)
-- [ ] Performance optimization (lazy load images, cache TMDB results)
-- [ ] Accessibility improvements (ARIA labels, keyboard nav, alt text)
-- [ ] Run full unit test suite
-- [ ] Verify test coverage is 70%+
-- [ ] Fix any failing tests
-- [ ] Security testing (auth/authorization, user data isolation, SQL injection)
-- [ ] Optional: Complete Week 13 Exercise (Challenge)
-- [ ] Weekly reflection/time log
+- [X] Run full unit test suite
+- [X] Verify test coverage is 70%+
+- [X] Fix any failing tests
+- [X] Security testing (auth/authorization, user data isolation, SQL injection)
 
 ---
 
 ## Week 14 (4/27) — Individual Project Code Reviews
 *Class: Individual Project Code Reviews*
 
-- [ ] Clean up code formatting
-- [ ] Add JavaDoc comments to all public methods
-- [ ] Remove commented-out code and debug logging
-- [ ] Update README with latest info
-- [ ] **Participate in Peer Code Review session**
-- [ ] Document feedback received
-- [ ] Prioritize feedback (critical vs nice-to-have)
-- [ ] Implement critical feedback (refactor, fix code smells, naming, error handling)
-- [ ] Re-test affected areas
-- [ ] **Submit Peer Code Review Feedback**
-- [ ] Weekly reflection/time log
+
+- [X] Remove commented-out code and debug logging
+
+- [X] **Participate in Peer Code Review session**
+- [X] Document feedback received
+- [X] Prioritize feedback (critical vs nice-to-have)
+- [X] Implement critical feedback (refactor, fix code smells, naming, error 
+  handling)
+- [X] Re-test affected areas
+- [X] **Submit Peer Code Review Feedback**
+- [X] Weekly reflection/time log
 
 ---
 
 ## Week 15 (5/4) — Work Week
 *Class: Work Week*
+- [ ] Clean up code formatting
+- [ ] Add JavaDoc comments to all public methods
+- [ ] Update README with latest info
 
 - [ ] Finish implementing peer review feedback
 - [ ] Write comprehensive `README.md` (description, tech stack, user stories, setup, deployment, screenshots, deployed link)

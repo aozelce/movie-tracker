@@ -25,47 +25,42 @@
             </div>
         </c:when>
         <c:otherwise>
-            <table class="table table-bordered table-sm mt-3">
-                <thead class="table-light">
-                <tr>
-                    <th>Title</th>
-                    <th>Type</th>
-                    <th>Year</th>
-                    <th>Genres</th>
-                    <th>Source</th>
-                    <th>Notes</th>
-                    <th>Watched</th>
-                    <th>Edit</th>
-                    <th>Delete</th>
-                </tr>
-                </thead>
-                <tbody>
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mt-3">
                 <c:forEach var="rec" items="${recommendations}">
-                    <tr>
-                        <td>${rec.media != null ? rec.media.title : 'N/A'}</td>
-                        <td>${rec.media != null ? rec.media.mediaType : 'N/A'}</td>
-                        <td>${rec.media != null && rec.media.year != null ? rec.media.year : ''}</td>
-                        <td>${rec.media != null ? rec.media.genres : ''}</td>
-                        <td>${rec.source != null ? rec.source.name : ''}</td>
-                        <td>${rec.notes}</td>
-                        <td>${rec.watched ? 'Yes' : 'No'}</td>
-                        <td>
-                            <a href="${pageContext.request.contextPath}/editRecommendation?id=${rec.id}"
-                               class="btn btn-warning btn-sm">
-                                Edit
-                            </a>
-                        </td>
-                        <td>
-                            <a href="${pageContext.request.contextPath}/deleteRecommendation?id=${rec.id}"
-                               class="btn btn-danger btn-sm"
-                               onclick="return confirm('Are you sure you want to delete this recommendation?');">
-                                Delete
-                            </a>
-                        </td>
-                    </tr>
+                    <div class="col">
+                        <div class="card h-100 shadow-sm">
+                            <%-- Use TMDB base URL for poster images. --%>
+                            <c:if test="${rec.media != null && rec.media.posterPath != null && rec.media.posterPath != ''}">
+                                <img src="https://image.tmdb.org/t/p/w500${rec.media.posterPath}" class="card-img-top" alt="Movie Poster" style="object-fit:cover; height:320px;">
+                            </c:if>
+                            <c:if test="${rec.media == null || rec.media.posterPath == null || rec.media.posterPath == ''}">
+                                <svg class="bd-placeholder-img card-img-top" width="100%" height="320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="No poster" preserveAspectRatio="xMidYMid slice" focusable="false"><title>No poster</title><rect width="100%" height="100%" fill="#e9ecef"/><text x="50%" y="50%" fill="#adb5bd" dy=".3em" text-anchor="middle">No Image</text></svg>
+                            </c:if>
+                            <div class="card-body">
+                                <h5 class="card-title mb-1">${rec.media != null ? rec.media.title : 'N/A'}</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">${rec.media != null ? rec.media.mediaType : 'N/A'}
+                                    <c:if test="${rec.media != null && rec.media.year != null}">(${rec.media.year})</c:if>
+                                </h6>
+                                <div class="mb-2">
+                                    <span class="badge bg-secondary">${rec.media != null ? rec.media.genres : ''}</span>
+                                </div>
+                                <p class="mb-1"><strong>Source:</strong> ${rec.source != null ? rec.source.name : ''}</p>
+                                <p class="mb-1"><strong>Notes:</strong> ${rec.notes}</p>
+                                <p class="mb-2"><strong>Watched:</strong> <span class="${rec.watched ? 'text-success' : 'text-danger'}">${rec.watched ? 'Yes' : 'No'}</span></p>
+                            </div>
+                            <div class="card-footer bg-white border-0 d-flex justify-content-between gap-2">
+                                <a href="${pageContext.request.contextPath}/editRecommendation?id=${rec.id}"
+                                   class="btn btn-warning btn-sm flex-fill">Edit</a>
+                                <a href="${pageContext.request.contextPath}/deleteRecommendation?id=${rec.id}"
+                                   class="btn btn-danger btn-sm flex-fill"
+                                   onclick="return confirm('Are you sure you want to delete this recommendation?');">
+                                    Delete
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </c:forEach>
-                </tbody>
-            </table>
+            </div>
         </c:otherwise>
     </c:choose>
 </div>
