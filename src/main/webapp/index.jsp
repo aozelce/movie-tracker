@@ -25,16 +25,21 @@
                     <c:when test="${empty displayName}">
                         <div class="text-center">
                             <p class="mb-4 fs-5">Sign in to start tracking your recommendations!</p>
-                            <a href="logIn" class="btn btn-primary btn-lg w-75">Log in</a>
+                            <a href="logIn" class="btn btn-lg w-75" style="background-color: #7a8894; color: white;">Log in</a>
                         </div>
                     </c:when>
                     <c:otherwise>
                         <div class="text-center">
                             <h2 class="mb-4 fw-bold">Welcome, <span class="text-primary">${displayName}</span>!</h2>
                             <div class="d-grid gap-3">
-                                <a class="btn btn-success btn-lg" href="addRecommendation">Add Recommendation</a>
-                                <a class="btn btn-info btn-lg text-white" href="recommendations">View Recommendations</a>
-                                <a class="btn btn-outline-danger btn-lg" href="logOut">Logout</a>
+                                <a class="btn  btn-lg"
+                                   style="background-color: #7a8894; color: white;"
+                                   href="addRecommendation">Add Recommendation</a>
+                                <a class="btn  btn-lg text-white"
+                                   style="background-color: #7a8894; color: white;"
+                                   href="recommendations">View Recommendations</a>
+                                <a class="btn  btn-lg"
+                                   style="background-color: #7a8894; color: white;" href="logOut">Logout</a>
                             </div>
                         </div>
                     </c:otherwise>
