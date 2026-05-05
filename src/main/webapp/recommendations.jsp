@@ -46,7 +46,11 @@
                                 </div>
                                 <p class="mb-1"><strong>Source:</strong> ${rec.source != null ? rec.source.name : ''}</p>
                                 <p class="mb-1"><strong>Notes:</strong> ${rec.notes}</p>
-                                <p class="mb-2"><strong>Watched:</strong> <span class="${rec.watched ? 'text-success' : 'text-danger'}">${rec.watched ? 'Yes' : 'No'}</span></p>
+                                <div class="mb-2 d-flex align-items-center gap-2">
+                                    <strong>Watched:</strong>
+                                    <input type="checkbox" class="form-check-input watched-toggle" data-id="${rec.id}" ${rec.watched ? 'checked' : ''}>
+                                    <span class="${rec.watched ? 'text-success' : 'text-danger'} watched-label">${rec.watched ? 'Yes' : 'No'}</span>
+                                </div>
                             </div>
                             <div class="card-footer bg-white border-0 d-flex justify-content-between gap-2">
                                 <a href="${pageContext.request.contextPath}/editRecommendation?id=${rec.id}"
@@ -63,7 +67,49 @@
             </div>
         </c:otherwise>
     </c:choose>
-</div>
+            </div>
+            <script>
+            // Wait for the DOM to be fully loaded
+            document.addEventListener('DOMContentLoaded', function() {
+                // Select all checkboxes with the 'watched-toggle' class
+                document.querySelectorAll('.watched-toggle').forEach(function(checkbox) {
+                    // Add a change event listener to each checkbox
+                    checkbox.addEventListener('change', function() {
+                        // Get the recommendation ID from the data attribute
+                        var id = this.getAttribute('data-id');
+                        // Determine the new watched state (true if checked)
+                        var watched = this.checked;
+                        // Find the label element that displays 'Yes' or 'No'
+                        var label = this.parentElement.querySelector('.watched-label');
+                        // Send an AJAX POST request to the backend to update the watched state
+                        fetch('toggleWatched', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                            // Send the recommendation ID and new watched state as form data
+                            body: 'id=' + encodeURIComponent(id) + '&watched=' + watched
+                        })
+                        // Parse the JSON response
+                        .then(response => response.json())
+                        .then(data => {
+                            // If the update was successful, update the label and its color
+                            if (data.success) {
+                                label.textContent = watched ? 'Yes' : 'No';
+                                label.className = watched ? 'text-success watched-label' : 'text-danger watched-label';
+                            } else {
+                                // If the update failed, alert the user and revert the checkbox
+                                alert('Failed to update watched status.');
+                                this.checked = !watched;
+                            }
+                        })
+                        .catch(() => {
+                            // If there was a network or server error, alert the user and revert the checkbox
+                            alert('Error updating watched status.');
+                            this.checked = !watched;
+                        });
+                    });
+                });
+            });
+            </script>
 <jsp:include page="/footer.jsp"/>
 </body>
 </html>
