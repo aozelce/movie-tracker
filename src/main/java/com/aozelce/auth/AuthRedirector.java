@@ -23,12 +23,7 @@ public class AuthRedirector {
 
         // Redirect unauthenticated users
         if (user == null) {
-            String loginUrl = (String) request.getServletContext().getAttribute("loginURL");
-            if (loginUrl != null) {
-                response.sendRedirect(loginUrl);
-            } else {
-                response.sendRedirect("error.jsp");
-            }
+            response.sendRedirect("index.jsp");
             return false; // Return false to indicate the user is not authenticated
         }
         return true; // Return true to indicate the user is authenticated
