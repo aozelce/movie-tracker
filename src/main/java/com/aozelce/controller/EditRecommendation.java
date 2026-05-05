@@ -37,7 +37,6 @@ public class EditRecommendation extends HttpServlet {
         List<Source> sources = sourceDao.getByPropertyEqual("user", user);
         request.setAttribute("recommendation", rec);
         request.setAttribute("sources", sources);
-        request.setAttribute("user", user);
         RequestDispatcher dispatcher = request.getRequestDispatcher("/editRecommendation.jsp");
         dispatcher.forward(request, response);
     }

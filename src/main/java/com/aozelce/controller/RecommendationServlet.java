@@ -66,7 +66,6 @@ public class RecommendationServlet extends HttpServlet {
 
         // Set attributes for the JSP view
         request.setAttribute("recommendations", recommendations);
-        request.setAttribute("user", refreshedUser);
 
         // Forward the request to the recommendations JSP for rendering
         RequestDispatcher dispatcher = request.getRequestDispatcher("/recommendations.jsp");

@@ -141,8 +141,6 @@ public class AddRecommendation extends HttpServlet {
      */
     private void showTmdbSearchPage(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        User user = UserSessionHelper.getUserFromSession(request);
-        request.setAttribute("user", user);
         RequestDispatcher dispatcher = request.getRequestDispatcher("/searchTmdb.jsp");
         dispatcher.forward(request, response);
     }
@@ -152,8 +150,6 @@ public class AddRecommendation extends HttpServlet {
      */
     private void showManualPage(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        User user = UserSessionHelper.getUserFromSession(request);
-        request.setAttribute("user", user);
         RequestDispatcher dispatcher = request.getRequestDispatcher("/addManually.jsp");
         dispatcher.forward(request, response);
     }
@@ -165,7 +161,6 @@ public class AddRecommendation extends HttpServlet {
      */
     private void handleTmdbSearch(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        User user = UserSessionHelper.getUserFromSession(request);
         String query = request.getParameter("query");
         if (query == null || query.trim().isEmpty()) {
             throw new IllegalArgumentException("Search query is required");
@@ -173,7 +168,6 @@ public class AddRecommendation extends HttpServlet {
         query = query.trim();
         Movie movieResults = tmdbDao.searchMovie(query);
         request.setAttribute("searchQuery", query);
-        request.setAttribute("user", user);
         if (movieResults == null || movieResults.getResults() == null || movieResults.getResults().isEmpty()) {
             request.setAttribute("message", "No results found for: " + query);
         } else {
@@ -204,8 +198,6 @@ public class AddRecommendation extends HttpServlet {
      */
     private void handleSelectTmdb(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        User user = UserSessionHelper.getUserFromSession(request);
-
         String tmdbIdStr = request.getParameter("tmdbId");
         if (tmdbIdStr == null || tmdbIdStr.isEmpty()) {
             throw new IllegalArgumentException("tmdbId is required");
@@ -234,6 +226,9 @@ public class AddRecommendation extends HttpServlet {
                 int mediaId = mediaDao.insert(media);
                 media.setId(mediaId);
             }
+
+            // Retrieve user from session for recommendation creation
+            User user = UserSessionHelper.getUserFromSession(request);
             // Create recommendation
             createRecommendation(request, user, media);
             // Redirect to recommendations list
@@ -244,7 +239,6 @@ public class AddRecommendation extends HttpServlet {
         // This is initial selection - show confirmation page
         Media media = createMediaFromRequest(request, tmdbId);
         request.setAttribute("media", media);
-        request.setAttribute("user", user);
 
         RequestDispatcher dispatcher = request.getRequestDispatcher("/confirmRecommendation.jsp");
         dispatcher.forward(request, response);
@@ -368,11 +362,11 @@ public class AddRecommendation extends HttpServlet {
             String sourceName = request.getParameter("sourceName");
             if (sourceName != null && !sourceName.trim().isEmpty()) {
                 sourceName = sourceName.trim();
-                GenericDao<com.aozelce.entity.Source> sourceDao = new GenericDao<>(com.aozelce.entity.Source.class);
+                GenericDao<Source> sourceDao = new GenericDao<>(Source.class);
                 
                 // Try to find existing source with this name for the user
                 List<Source> existingSources = sourceDao.getByPropertyEqual("name", sourceName);
-                com.aozelce.entity.Source source = null;
+                Source source = null;
                 
                 if (existingSources != null && !existingSources.isEmpty()) {
                     // Use existing source
@@ -380,7 +374,7 @@ public class AddRecommendation extends HttpServlet {
                     logger.info("Using existing source: {}", sourceName);
                 } else {
                     // Create new source for this user
-                    source = new com.aozelce.entity.Source();
+                    source = new Source();
                     source.setUser(user);
                     source.setName(sourceName);
                     int sourceId = sourceDao.insert(source);
