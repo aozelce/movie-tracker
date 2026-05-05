@@ -1,5 +1,6 @@
 package com.aozelce.controller;
 
+import com.aozelce.entity.Recommendation;
 import com.aozelce.entity.User;
 import com.aozelce.persistence.GenericDao;
 import org.apache.logging.log4j.*;
@@ -17,7 +18,7 @@ import java.util.List;
  * @author aozelce
  */
 @WebServlet("/recommendations")
-public class Recommendation extends HttpServlet {
+public class RecommendationServlet extends HttpServlet {
 
     private final Logger logger = LogManager.getLogger(this.getClass());
 
@@ -61,7 +62,7 @@ public class Recommendation extends HttpServlet {
         User refreshedUser = genericDaoUser.getById(user.getId());
 
         // Retrieve the user's recommendations
-        List<com.aozelce.entity.Recommendation> recommendations = refreshedUser.getRecommendations();
+        List<Recommendation> recommendations = refreshedUser.getRecommendations();
 
         // Set attributes for the JSP view
         request.setAttribute("recommendations", recommendations);
