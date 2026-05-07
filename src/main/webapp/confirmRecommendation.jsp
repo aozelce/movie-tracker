@@ -7,16 +7,7 @@
 
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="${pageContext.request.contextPath}/">Movie Tracker</a>
-        <div class="navbar-nav ms-auto">
-            <a class="nav-link" href="${pageContext.request.contextPath}/">Home</a>
-            <a class="nav-link" href="${pageContext.request.contextPath}/recommendations">My Recommendations</a>
-            <a class="nav-link" href="${pageContext.request.contextPath}/logOut">Logout</a>
-        </div>
-    </div>
-</nav>
+<jsp:include page="/nav.jsp"/>
 
 <div class="container">
     <div class="row">
@@ -69,12 +60,6 @@
 
                 <!-- Hidden fields to pass media data -->
                 <input type="hidden" name="tmdbId" value="${media.tmdbId}">
-                <input type="hidden" name="title" value="${media.title}">
-                <input type="hidden" name="mediaType" value="${media.mediaType}">
-                <input type="hidden" name="year" value="${media.year}">
-                <input type="hidden" name="posterPath" value="${media.posterPath}">
-                <input type="hidden" name="overview" value="${media.overview}">
-                <input type="hidden" name="genres" value="${media.genres}">
 
                 <!-- Recommendation Details -->
                 <fieldset class="mb-4">
@@ -119,4 +104,3 @@
 <jsp:include page="/footer.jsp"/>
 </body>
 </html>
-

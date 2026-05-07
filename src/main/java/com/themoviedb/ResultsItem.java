@@ -61,6 +61,9 @@ public class ResultsItem{
 	@JsonProperty("genres")
 	private String genres;
 
+	@JsonProperty("first_air_date")
+	private String firstAirDate;
+
 	/**
 	 * Set overview.
 	 *
@@ -365,6 +368,24 @@ public class ResultsItem{
 	 */
 	public String getGenres() {
         return genres;
+    }
+
+	/**
+	 * Set first air date.
+	 *
+	 * @param firstAirDate the first air date
+	 */
+	public void setFirstAirDate(String firstAirDate) {
+        this.firstAirDate = firstAirDate;
+    }
+
+	/**
+	 * Get first air date string.
+	 *
+	 * @return the string
+	 */
+	public String getFirstAirDate() {
+        return firstAirDate;
     }
 
 	@Override

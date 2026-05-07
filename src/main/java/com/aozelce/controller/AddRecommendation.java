@@ -177,6 +177,10 @@ public class AddRecommendation extends HttpServlet {
                 result.setGenres(genreNames);
             }
             request.setAttribute("results", movieResults.getResults());
+            // Store results in session for later use
+            request.getSession().setAttribute("tmdbResults", movieResults.getResults());
+
+
         }
         RequestDispatcher dispatcher = request.getRequestDispatcher("/searchResults.jsp");
         dispatcher.forward(request, response);
@@ -198,13 +202,23 @@ public class AddRecommendation extends HttpServlet {
      */
     private void handleSelectTmdb(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        // Retrieve TMDB ID from request parameter
         String tmdbIdStr = request.getParameter("tmdbId");
-        if (tmdbIdStr == null || tmdbIdStr.isEmpty()) {
-            throw new IllegalArgumentException("tmdbId is required");
-        }
-
         int tmdbId = Integer.parseInt(tmdbIdStr);
         logger.info("User selected/confirmed TMDB ID: {}", tmdbId);
+        // Retrieve results from session
+        List<ResultsItem> results = (List<ResultsItem>) request.getSession().getAttribute("tmdbResults");
+        // Find the selected result in the results list
+        ResultsItem selected = null;
+        for (ResultsItem item : results) {
+            if (item.getId() == tmdbId) {
+                selected = item;
+                break;
+            }
+        }
+        if (selected == null) {
+            throw new RuntimeException("Selected TMDB item not found in session results");
+        }
 
         // Check if this is the final submit (has sourceName/notes) or initial selection
         String sourceName = request.getParameter("sourceName");
@@ -212,12 +226,13 @@ public class AddRecommendation extends HttpServlet {
 
         // If sourceName or notes are present, this is a final submission - save the recommendation
         if (sourceName != null || notes != null) {
-            // Create or retrieve Media from TMDB data
-            Media media = createMediaFromRequest(request, tmdbId);
+            // Create or retrieve Media
+            Media media = createMediaFromRequest(selected);
             if (media == null) {
                 throw new RuntimeException("Failed to create Media from TMDB selection");
             }
             // Check if media already exists in database
+            // This is to prevent duplicate media insertion into the db
             GenericDao<Media> mediaDao = new GenericDao<>(Media.class);
             List<Media> existingMedia = mediaDao.getByPropertyEqual("tmdbId", tmdbId);
             if (existingMedia != null && !existingMedia.isEmpty()) {
@@ -236,8 +251,8 @@ public class AddRecommendation extends HttpServlet {
             return;
         }
 
-        // This is initial selection - show confirmation page
-        Media media = createMediaFromRequest(request, tmdbId);
+       //
+        Media media = createMediaFromRequest(selected);
         request.setAttribute("media", media);
 
         RequestDispatcher dispatcher = request.getRequestDispatcher("/confirmRecommendation.jsp");
@@ -309,38 +324,54 @@ public class AddRecommendation extends HttpServlet {
     /**
      * Creates a Media object from request parameters.
      *
-     * @param request the HTTP request containing media data
-     * @param tmdbId the TMDB ID
+     *
+     * @param selected the selected ResultsItem from TMDB search (contains TMDB data)
      * @return the created Media object
      */
-    private Media createMediaFromRequest(HttpServletRequest request, int tmdbId) {
+    private Media createMediaFromRequest(ResultsItem selected) {
+
         try {
-            String title = request.getParameter("title");
-            String mediaType = request.getParameter("mediaType");
-            String yearStr = request.getParameter("year");
-            String posterPath = request.getParameter("posterPath");
-            String overview = request.getParameter("overview");
-            String genres = request.getParameter("genres");
+            int tmdbId = selected.getId();
+            String title = selected.getTitle();
+            if (title == null || title.trim().isEmpty()) {
+                title = selected.getName();
+            }
+            if (title == null || title.trim().isEmpty()) {
+                throw new IllegalArgumentException("TMDB result is missing a title and name");
+            }
+
+            String mediaType = selected.getMediaType();
+            String year = null;
+            String posterPath = selected.getPosterPath();
+            String overview = selected.getOverview();
+            String genres = selected.getGenres();
 
             Media media = new Media();
             media.setTmdbId(tmdbId);
-            media.setTitle(title);
+            media.setTitle(title.trim());
             media.setMediaType(mediaType);
             media.setPosterPath(posterPath);
             media.setOverview(overview);
             media.setGenres(genres);
 
-            if (yearStr != null && !yearStr.isEmpty()) {
-                try {
-                    media.setYear(Integer.parseInt(yearStr));
-                } catch (NumberFormatException e) {
-                    logger.warn("Invalid year format: {}", yearStr);
-                }
+            // Extract year from release date or first air date based on media type
+            String releaseDate = selected.getReleaseDate(); // get from ResultsItem for Movie
+            String firstAirDate = selected.getFirstAirDate(); // get from ResultsItem for TV
+
+
+            if ("movie".equalsIgnoreCase(mediaType) && releaseDate != null && releaseDate.length() >= 4) {
+                year = releaseDate.substring(0, 4);
+            } else if ("tv".equalsIgnoreCase(mediaType) && firstAirDate != null && firstAirDate.length() >= 4) {
+                year = firstAirDate.substring(0, 4);
+            }
+            if (year != null) {
+                media.setYear(Integer.parseInt(year));
             }
 
-            return media;
+            return media; // Return the created Media object
+
         } catch (Exception e) {
-            logger.error("Error creating Media from request", e);
+            logger.error("Error creating Media", e);
             return null;
         }
     }
