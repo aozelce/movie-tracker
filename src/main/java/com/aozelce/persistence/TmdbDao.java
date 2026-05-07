@@ -1,9 +1,12 @@
 package com.aozelce.persistence;
 
 import com.aozelce.util.PropertiesLoader;
+import java.util.List;
+import java.util.ArrayList;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.themoviedb.Movie;
+import com.themoviedb.ResultsItem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -64,20 +67,32 @@ public class TmdbDao {
         try {
             // Create a Jersey client
             Client client = ClientBuilder.newClient();
-            
+
             // Build the search/movie endpoint with query and API key
             WebTarget target = client.target(baseUrl)
                     .path("search")
-                    .path("movie")
+                    .path("multi")
                     .queryParam("api_key", apiKey)
                     .queryParam("query", searchQuery);
 
             // Execute the GET request and retrieve response as JSON string
             String response = target.request(MediaType.APPLICATION_JSON).get(String.class);
-            
+
             // Create an ObjectMapper to convert JSON response to Movie object
             ObjectMapper mapper = new ObjectMapper();
             Movie movie = mapper.readValue(response, Movie.class);
+
+            // Filter out results where mediaType is not 'movie' or 'tv'
+            if (movie != null && movie.getResults() != null) {
+                List<ResultsItem> filtered = new java.util.ArrayList<>();
+                for (ResultsItem item : movie.getResults()) {
+                    String type = item.getMediaType();
+                    if ("movie".equals(type) || "tv".equals(type)) {
+                        filtered.add(item);
+                    }
+                }
+                movie.setResults(filtered);
+            }
 
             return movie;
         } catch (JsonProcessingException e) {
