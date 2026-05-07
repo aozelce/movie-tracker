@@ -36,20 +36,22 @@
                     <tr>
                         <td>${not empty result.title ? result.title : result.name}</td>
                         <td>${not empty result.mediaType ? result.mediaType : 'movie'}</td>
-                        <td>${result.releaseDate}</td>
+                        <%--Display different properties based on whether its a movie or tv show--%>
+                        <td>
+                            <c:choose>
+                                <c:when test="${result.mediaType eq 'tv'}">
+                                    <c:out value="${not empty result.firstAirDate && result.firstAirDate.length() >= 4 ? result.firstAirDate.substring(0,4) : ''}"/>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:out value="${not empty result.releaseDate && result.releaseDate.length() >= 4 ? result.releaseDate.substring(0,4) : ''}"/>
+                                </c:otherwise>
+                            </c:choose>
+                        </td>
                         <td>${result.overview}</td>
                         <td>
                             <form method="POST" action="${pageContext.request.contextPath}/addRecommendation">
                                 <input type="hidden" name="action" value="select-tmdb">
                                 <input type="hidden" name="tmdbId" value="${result.id}">
-                                <input type="hidden" name="title" value="${not empty result.title ? result.title : result.name}">
-                                <input type="hidden" name="mediaType" value="${not empty result.mediaType ? result.mediaType : 'movie'}">
-                                <!-- substring(0,4) gets the first 4 characters (the year) from releaseDate -->
-                                <input type="hidden" name="year"
-                                       value="${not empty result.releaseDate and result.releaseDate.length() >= 4 ? result.releaseDate.substring(0,4) : ''}">
-                                <input type="hidden" name="posterPath" value="${result.posterPath}">
-                                <input type="hidden" name="overview" value="${result.overview}">
-                                <input type="hidden" name="genres" value="${result.genres}">
                                 <button type="submit" class="btn btn-primary btn-sm">Select</button>
                             </form>
                         </td>
