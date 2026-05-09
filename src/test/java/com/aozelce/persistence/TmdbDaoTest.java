@@ -4,22 +4,33 @@ import com.themoviedb.Movie;
 import com.themoviedb.ResultsItem;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 import java.util.Properties;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 
 /**
- * Unit tests for the TmdbDao class, focusing on movie search functionality using TheMovieDB API.
+ * Unit tests for the TmdbDao class, focusing on movie search functionality
+ * using TheMovieDB API.
  */
 class TmdbDaoTest {
 
+    /**
+     * The Dao.
+     */
     TmdbDao dao;
+    /**
+     * The Movie.
+     */
     Movie movie;
 
     /**
-     * Sets up the test environment by loading TMDB properties and initializing the DAO and a sample movie.
+     * Sets up the test environment by loading TMDB properties and initializing
+     * the DAO and a sample movie.
+     *
+     * @throws Exception the exception
      */
     @BeforeEach
     void setUp() throws Exception{
@@ -32,7 +43,8 @@ class TmdbDaoTest {
     }
 
     /**
-     * Tests the searchMovie method to ensure it returns the correct movie results.
+     * Tests the searchMovie method to ensure it returns the correct movie
+     * results.
      */
     @Test
     void searchMovie() {

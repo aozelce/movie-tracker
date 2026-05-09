@@ -40,11 +40,11 @@ class UserDaoTest {
     }
 
     /**
-     * Tests the successful retrieval of a user by their ID using the UserDao class.
-     * - Creates an instance of the UserDao class.
-     * - Calls the getById method with a valid user ID.
-     * - Asserts that the retrieved user object is not null.
-     * - Asserts that the username of the retrieved user matches the expected value.
+     * Tests the successful retrieval of a user by their ID using the UserDao
+     * class. - Creates an instance of the UserDao class. - Calls the getById
+     * method with a valid user ID. - Asserts that the retrieved user object is
+     * not null. - Asserts that the username of the retrieved user matches the
+     * expected value.
      */
     @Test
     void getUserByIdSuccess() {
@@ -103,6 +103,9 @@ class UserDaoTest {
         assertEquals(newUser, retrievedUser);
     }
 
+    /**
+     * Insert with recommendations success.
+     */
     @Test
     void insertWithRecommendationsSuccess() {
         // Create DAOs needed to fetch related objects
@@ -169,8 +172,8 @@ class UserDaoTest {
     }
 
     /**
-     * Tests the deletion of recommendations from the database
-     * when a user was deleted.
+     * Tests the deletion of recommendations from the database when a user was
+     * deleted.
      */
     @Test
     void deleteWithUser() {
