@@ -2,6 +2,9 @@ package com.aozelce.auth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * The type Token response.
+ */
 public class TokenResponse {
 
 	@JsonProperty("access_token")
@@ -19,23 +22,48 @@ public class TokenResponse {
 	@JsonProperty("expires_in")
 	private int expiresIn;
 
-	public String getAccessToken(){
+    /**
+     * Get access token string.
+     *
+     * @return the string
+     */
+    public String getAccessToken(){
 		return accessToken;
 	}
 
-	public String getRefreshToken(){
+    /**
+     * Get refresh token string.
+     *
+     * @return the string
+     */
+    public String getRefreshToken(){
 		return refreshToken;
 	}
 
-	public String getIdToken(){
+    /**
+     * Get id token string.
+     *
+     * @return the string
+     */
+    public String getIdToken(){
 		return idToken;
 	}
 
-	public String getTokenType(){
+    /**
+     * Get token type string.
+     *
+     * @return the string
+     */
+    public String getTokenType(){
 		return tokenType;
 	}
 
-	public int getExpiresIn(){
+    /**
+     * Get expires in int.
+     *
+     * @return the int
+     */
+    public int getExpiresIn(){
 		return expiresIn;
 	}
 }

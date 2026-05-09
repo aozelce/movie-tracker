@@ -2,6 +2,9 @@ package com.aozelce.auth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * The type Keys item.
+ */
 public class KeysItem{
 
 	@JsonProperty("kty")
@@ -22,27 +25,57 @@ public class KeysItem{
 	@JsonProperty("n")
 	private String N;
 
-	public String getKty(){
+    /**
+     * Get kty string.
+     *
+     * @return the string
+     */
+    public String getKty(){
 		return kty;
 	}
 
-	public String getE(){
+    /**
+     * Get e string.
+     *
+     * @return the string
+     */
+    public String getE(){
 		return E;
 	}
 
-	public String getUse(){
+    /**
+     * Get use string.
+     *
+     * @return the string
+     */
+    public String getUse(){
 		return use;
 	}
 
-	public String getKid(){
+    /**
+     * Get kid string.
+     *
+     * @return the string
+     */
+    public String getKid(){
 		return kid;
 	}
 
-	public String getAlg(){
+    /**
+     * Get alg string.
+     *
+     * @return the string
+     */
+    public String getAlg(){
 		return alg;
 	}
 
-	public String getN(){
+    /**
+     * Get n string.
+     *
+     * @return the string
+     */
+    public String getN(){
 		return N;
 	}
 }

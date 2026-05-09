@@ -15,7 +15,11 @@ public class AuthRedirector {
 
     /**
      * Redirects unauthenticated users to the login page or error page.
+     *
+     * @param request  the request
+     * @param response the response
      * @return true if the user is authenticated, false if not
+     * @throws IOException the io exception
      */
     public static boolean redirectIfUnauthenticated(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // Validate user is authenticated

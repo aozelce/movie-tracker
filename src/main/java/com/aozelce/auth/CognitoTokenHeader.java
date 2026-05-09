@@ -2,6 +2,9 @@ package com.aozelce.auth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * The type Cognito token header.
+ */
 public class CognitoTokenHeader{
 
 	@JsonProperty("kid")
@@ -10,11 +13,21 @@ public class CognitoTokenHeader{
 	@JsonProperty("alg")
 	private String alg;
 
-	public String getKid(){
+    /**
+     * Get kid string.
+     *
+     * @return the string
+     */
+    public String getKid(){
 		return kid;
 	}
 
-	public String getAlg(){
+    /**
+     * Get alg string.
+     *
+     * @return the string
+     */
+    public String getAlg(){
 		return alg;
 	}
 }
