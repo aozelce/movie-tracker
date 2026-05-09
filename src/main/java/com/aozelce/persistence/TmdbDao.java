@@ -1,8 +1,6 @@
 package com.aozelce.persistence;
 
-import com.aozelce.util.PropertiesLoader;
 import java.util.List;
-import java.util.ArrayList;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.themoviedb.Movie;
@@ -44,11 +42,12 @@ public class TmdbDao {
     };
 
     /**
-     * Searches for a movie from TMDB API.
-     * Retrieves TMDB properties from application scope (loaded at startup) instead of reloading from file.
+     * Searches for a movie from TMDB API. Retrieves TMDB properties from
+     * application scope (loaded at startup) instead of reloading from file.
      *
      * @param searchQuery the search query to find movies
-     * @return Movie object with results (may contain 0 results if not found), or null if API call fails
+     * @return Movie object with results (may contain 0 results if not found),
+     * or null if API call fails
      */
     public Movie searchMovie(String searchQuery) {
 

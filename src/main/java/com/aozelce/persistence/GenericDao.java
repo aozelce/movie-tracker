@@ -10,6 +10,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import java.util.List;
+
 /**
  * GenericDao is a generic Data Access Object (DAO) class that provides common database operations
  * for any entity type. It uses Hibernate for ORM (Object-Relational Mapping) to interact with the database.
@@ -92,10 +93,10 @@ public class GenericDao<T> {
 
     /**
     * Inserts a new entity of type T into the database and returns the generated identifier.
-    *
-    * @param entity the entity to be inserted
-    * @return the generated identifier for the inserted entity
-    */
+     *
+     * @param entity the entity to be inserted
+     * @return the generated identifier for the inserted entity
+     */
     public int insert(T entity) {
         Session session = getSession();
         Transaction transaction = session.beginTransaction();
