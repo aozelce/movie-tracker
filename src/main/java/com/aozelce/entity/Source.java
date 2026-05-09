@@ -1,8 +1,7 @@
 package com.aozelce.entity;
 
 import jakarta.persistence.*;
-
-import java.util.Objects;
+import lombok.*;
 
 /**
  * The type Source.
@@ -11,11 +10,18 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "source")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString(exclude = "user")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Source {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    @EqualsAndHashCode.Include
     private int id;
 
     @ManyToOne
@@ -24,98 +30,4 @@ public class Source {
 
     @Column(name = "name")
     private String name;
-
-    /**
-     * Instantiates a new Source.
-     */
-    public Source() {
-    }
-
-    /**
-     * Instantiates a new Source.
-     *
-     * @param id   the id
-     * @param user the user
-     * @param name the name
-     */
-    public Source(int id, User user, String name) {
-        this.id = id;
-        this.user = user;
-        this.name = name;
-    }
-
-    /**
-     * Gets id.
-     *
-     * @return the id
-     */
-    public int getId() {
-        return id;
-    }
-
-    /**
-     * Sets id.
-     *
-     * @param id the id
-     */
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    /**
-     * Gets user.
-     *
-     * @return the user
-     */
-    public User getUser() {
-        return user;
-    }
-
-    /**
-     * Sets user.
-     *
-     * @param user the user
-     */
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    /**
-     * Gets name.
-     *
-     * @return the name
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Sets name.
-     *
-     * @param name the name
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String toString() {
-        return "Source{" +
-                "id=" + id +
-                ", user=" + user.getId() +
-                ", name='" + name + '\'' +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Source source = (Source) o;
-        return getId() == source.getId() && Objects.equals(getUser(), source.getUser()) && Objects.equals(getName(), source.getName());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getUser(), getName());
-    }
 }

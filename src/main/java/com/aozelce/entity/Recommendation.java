@@ -1,8 +1,7 @@
 package com.aozelce.entity;
 
 import jakarta.persistence.*;
-
-import java.util.Objects;
+import lombok.*;
 
 /**
  * The type Recommendation.
@@ -11,11 +10,18 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "recommendation")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString(exclude = "user")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Recommendation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    @EqualsAndHashCode.Include
     private int id;
 
     @ManyToOne
@@ -35,161 +41,4 @@ public class Recommendation {
 
     @Column(name = "is_watched")
     private boolean isWatched;
-
-    /**
-     * Instantiates a new Recommendation.
-     */
-    public Recommendation() {
-    }
-
-    /**
-     * Instantiates a new Recommendation.
-     *
-     * @param user      the user
-     * @param source    the source
-     * @param media     the media
-     * @param notes     the notes
-     * @param isWatched the is watched
-     */
-    public Recommendation(User user, Source source, Media media, String notes, boolean isWatched) {
-        this.user = user;
-        this.source = source;
-        this.media = media;
-        this.notes = notes;
-        this.isWatched = isWatched;
-    }
-
-    /**
-     * Gets id.
-     *
-     * @return the id
-     */
-    public int getId() {
-        return id;
-    }
-
-    /**
-     * Sets id.
-     *
-     * @param id the id
-     */
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    /**
-     * Gets user.
-     *
-     * @return the user
-     */
-    public User getUser() {
-        return user;
-    }
-
-    /**
-     * Sets user.
-     *
-     * @param user the user
-     */
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    /**
-     * Gets source.
-     *
-     * @return the source
-     */
-    public Source getSource() {
-        return source;
-    }
-
-    /**
-     * Sets source.
-     *
-     * @param source the source
-     */
-    public void setSource(Source source) {
-        this.source = source;
-    }
-
-    /**
-     * Gets media.
-     *
-     * @return the media
-     */
-    public Media getMedia() {
-        return media;
-    }
-
-    /**
-     * Sets media.
-     *
-     * @param media the media
-     */
-    public void setMedia(Media media) {
-        this.media = media;
-    }
-
-    /**
-     * Gets notes.
-     *
-     * @return the notes
-     */
-    public String getNotes() {
-        return notes;
-    }
-
-    /**
-     * Sets notes.
-     *
-     * @param notes the notes
-     */
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
-
-    /**
-     * Is watched boolean.
-     *
-     * @return the boolean
-     */
-    public boolean isWatched() {
-        return isWatched;
-    }
-
-    /**
-     * Sets watched.
-     *
-     * @param watched the watched
-     */
-    public void setWatched(boolean watched) {
-        isWatched = watched;
-    }
-
-
-
-    @Override
-    public String toString() {
-        return "Recommendation{" +
-                "id=" + id +
-                ", user=" + user +
-                ", source=" + source +
-                ", media=" + media +
-                ", notes='" + notes + '\'' +
-                ", isWatched=" + isWatched +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Recommendation that = (Recommendation) o;
-        return getId() == that.getId() && isWatched() == that.isWatched() && Objects.equals(getUser(), that.getUser()) && Objects.equals(getSource(), that.getSource()) && Objects.equals(getMedia(), that.getMedia()) && Objects.equals(getNotes(), that.getNotes());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getUser(), getSource(), getMedia(), getNotes(), isWatched());
-    }
 }
