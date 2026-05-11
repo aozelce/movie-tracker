@@ -3,22 +3,20 @@ package com.aozelce.controller;
 import com.aozelce.entity.Recommendation;
 import com.aozelce.entity.User;
 import com.aozelce.persistence.GenericDao;
+import com.aozelce.util.AuthUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 /**
- * Servlet responsible for deleting a recommendation.
- * Requires authentication and verifies user ownership.
- *
+ * Servlet responsible for deleting a recommendation. Requires authentication
+ * and verifies user ownership.
+ * <p>
  * URL: /deleteRecommendation?id={recommendationId}
  */
 @WebServlet("/deleteRecommendation")
@@ -27,21 +25,11 @@ public class DeleteRecommendation extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws IOException {
         // Validate user is authenticated
-        HttpSession session = request.getSession(false);
-        User user = null;
-        if (session != null) {
-            user = (User) session.getAttribute("user");
-        }
+        User user = AuthUtils.getAuthenticatedUser(request, response);
         if (user == null) {
-            String loginUrl = (String) getServletContext().getAttribute("loginURL");
-            if (loginUrl != null) {
-                response.sendRedirect(loginUrl);
-            } else {
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "User not authenticated");
-            }
-            return;
+            return;   // Already redirected or error sent
         }
 
         String idParam = request.getParameter("id");

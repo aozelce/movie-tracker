@@ -3,17 +3,22 @@ package com.aozelce.controller;
 import com.aozelce.entity.Recommendation;
 import com.aozelce.entity.User;
 import com.aozelce.persistence.GenericDao;
-import org.apache.logging.log4j.*;
+import com.aozelce.util.AuthUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import javax.servlet.*;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
 /**
- * Servlet responsible for handling user recommendation requests.
- * Retrieves and displays the list of recommendations for the authenticated user.
+ * Servlet responsible for handling user recommendation requests. Retrieves and
+ * displays the list of recommendations for the authenticated user.
  *
  * @author aozelce
  */
@@ -37,24 +42,9 @@ public class RecommendationServlet extends HttpServlet {
             throws ServletException, IOException {
 
         // Retrieve the existing session without creating a new one
-        HttpSession session = request.getSession(false);
-        User user = null;
-
-        // Extract the authenticated user from the session if session exists
-        if (session != null) {
-            user = (User) session.getAttribute("user");
-        }
-
-        // Redirect unauthenticated users to login or error page
+        User user = AuthUtils.getAuthenticatedUser(request, response);
         if (user == null) {
-            // Get the Cognito login URL from the application context
-            String loginUrl = (String) getServletContext().getAttribute("loginURL");
-            if (loginUrl != null) {
-                response.sendRedirect(loginUrl);
-            } else {
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "User not authenticated");
-            }
-            return;
+            return;   // Already redirected or error sent
         }
 
         // Fetch a fresh copy of the user from the database to ensure recommendations are loaded
