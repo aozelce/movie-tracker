@@ -9,16 +9,12 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Service for interacting with the TMDB (The Movie Database) API
- * to fetch and map movie genre information.
+ * Service for interacting with the TMDB (The Movie Database) API to fetch and
+ * map movie genre information.
  *
  * @author aozelce
  */
@@ -29,7 +25,12 @@ public class TmdbGenreService {
     private final String apiKey;
     private final String baseUrl;
 
-    // Constructor: loads API key and base URL from properties file
+    /**
+     * Instantiates a new Tmdb genre service.
+     *
+     * @param properties the properties
+     */
+// Constructor: loads API key and base URL from properties file
     public TmdbGenreService(Properties properties) {
         this.apiKey = properties.getProperty("tmdb.api.key");
         this.baseUrl = properties.getProperty("tmdb.base.url");
@@ -65,12 +66,18 @@ public class TmdbGenreService {
         }
     }
 
-    // Converts a list of genre IDs to a comma-separated string of genre names
+    /**
+     * Gets genre names.
+     *
+     * @param genreIds the genre ids
+     * @return the genre names
+     */
+// Converts a list of genre IDs to a comma-separated string of genre names
     public String getGenreNames(List<Integer> genreIds) {
         // Fetch the latest genre map from TMDB API
         Map<Integer, String> genreMap = fetchGenres();
         // If no genre IDs or fetch failed, return empty string
-        if (genreIds == null || genreIds.isEmpty() || genreMap == null) return "";
+        if (genreIds == null || genreIds.isEmpty()) return "";
         // Map each genre ID to its name, skip nulls, and join with commas
         return genreIds.stream()
                 .map(genreMap::get)
