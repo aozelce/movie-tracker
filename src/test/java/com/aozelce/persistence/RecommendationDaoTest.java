@@ -163,4 +163,17 @@ class RecommendationDaoTest {
                 "best");
         assertEquals(2, recommendations.size());
     }
+
+    /**
+     * Gets by property equal with object value.
+     */
+    @Test
+    void getByPropertyEqualWithObject() {
+        GenericDao<User> userDao = new GenericDao<>(User.class);
+        User user = userDao.getById(3);
+
+        List<Recommendation> recommendations = genericDao.getByPropertyEqual("user", user);
+        assertEquals(3, recommendations.size());
+        assertEquals("mike_chen", recommendations.get(0).getUser().getUsername());
+    }
 }

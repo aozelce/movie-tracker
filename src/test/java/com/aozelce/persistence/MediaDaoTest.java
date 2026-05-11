@@ -109,6 +109,16 @@ class MediaDaoTest {
     }
 
     /**
+     * Gets by property equal with integer value.
+     */
+    @Test
+    void getByPropertyEqualWithInt() {
+        List<Media> mediaList = genericDao.getByPropertyEqual("tmdbId", 1668);
+        assertEquals(1, mediaList.size());
+        assertEquals("Friends", mediaList.get(0).getTitle());
+    }
+
+    /**
      * Gets by property like.
      */
     @Test
