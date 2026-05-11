@@ -1,18 +1,20 @@
 package com.aozelce.controller;
 
-import org.apache.logging.log4j.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import javax.servlet.*;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 /**
-* Servlet responsible for handling user logout operations.
-*
-* @author aozelce
-*
-*/
+ * Servlet responsible for handling user logout operations.
+ *
+ * @author aozelce
+ */
 @WebServlet("/logOut")
 public class LogOut extends HttpServlet {
 
@@ -25,12 +27,11 @@ public class LogOut extends HttpServlet {
      *
      * @param request  the HTTP request object
      * @param response the HTTP response object
-     * @throws ServletException if a servlet-specific error occurs
      * @throws IOException      if an I/O error occurs during redirection
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws IOException {
 
         // Invalidate the session if it exists
         HttpSession session = request.getSession(false);

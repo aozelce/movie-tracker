@@ -11,7 +11,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import javax.servlet.*;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
@@ -27,6 +26,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 
+/**
+ * The type Auth.
+ */
 @WebServlet(
         urlPatterns = {"/auth"}
 )
@@ -35,13 +37,37 @@ import java.util.stream.Collectors;
  */
 
 public class Auth extends HttpServlet {
+    /**
+     * The Client id.
+     */
     String CLIENT_ID;
+    /**
+     * The Client secret.
+     */
     String CLIENT_SECRET;
+    /**
+     * The Oauth url.
+     */
     String OAUTH_URL;
+    /**
+     * The Login url.
+     */
     String LOGIN_URL;
+    /**
+     * The Redirect url.
+     */
     String REDIRECT_URL;
+    /**
+     * The Region.
+     */
     String REGION;
+    /**
+     * The Pool id.
+     */
     String POOL_ID;
+    /**
+     * The Jwks.
+     */
     Keys jwks;
 
     private final Logger logger = LogManager.getLogger(this.getClass());
@@ -147,7 +173,6 @@ public class Auth extends HttpServlet {
         String keyId = tokenHeader.getKid();
         String alg = tokenHeader.getAlg();
 
-        // todo pick proper key from the two - it just so happens that the first one works for my case
         // Use Key's N and E
         BigInteger modulus = new BigInteger(1, org.apache.commons.codec.binary.Base64.decodeBase64(jwks.getKeys().get(0).getN()));
         BigInteger exponent = new BigInteger(1, org.apache.commons.codec.binary.Base64.decodeBase64(jwks.getKeys().get(0).getE()));
