@@ -4,6 +4,7 @@
 <c:set var="pageTitle" value="Error"/>
 <jsp:include page="/head.jsp"/>
 <body class="bg-light">
+<main>
 <div class="container py-5">
     <div class="row">
         <div class="col-lg-6">
@@ -27,7 +28,7 @@
         </div>
     </div>
 </div>
-
+</main>
 <jsp:include page="/footer.jsp"/>
 </body>
 </html>

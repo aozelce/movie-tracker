@@ -8,6 +8,7 @@
 <body>
 
 <jsp:include page="/nav.jsp"/>
+<main>
 
 <div class="container">
     <div class="row">
@@ -99,6 +100,7 @@
         </div>
     </div>
 </div>
+</main>
 <jsp:include page="/footer.jsp"/>
 </body>
 </html>

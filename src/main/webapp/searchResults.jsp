@@ -1,5 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<!DOCTYPE html>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %><!DOCTYPE html>
+
 <html>
 <c:set var="pageTitle" value="TMDB Search Results"/>
 <jsp:include page="/head.jsp"/>
@@ -14,6 +15,7 @@
         </div>
     </div>
 </nav>
+<main></main>
 <div class="container">
     <h2>Results for "${searchQuery}"</h2>
     <c:choose>
@@ -61,7 +63,9 @@
             </table>
         </c:otherwise>
     </c:choose>
+    <div class="text-muted mt-3">Data provided by <a href="https://www.themoviedb.org/" target="_blank">TMDB</a>.</div>
 </div>
+</main>
 <jsp:include page="/footer.jsp"/>
 </body>
 </html>

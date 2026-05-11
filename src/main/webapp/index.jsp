@@ -49,8 +49,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-white border-top text-center py-3 mt-4 small text-muted">
-        <jsp:include page="/footer.jsp"/>
-    </footer>
+    <jsp:include page="/footer.jsp"/>
+
 </body>
 </html>

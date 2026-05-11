@@ -81,3 +81,7 @@ Users need a single source of truth for all their watch recommendations with the
 
 
 #### [TimeLog](TimeLog.md)
+
+## Acknowledgments
+
+- Data provided by [TMDB](https://www.themoviedb.org/).

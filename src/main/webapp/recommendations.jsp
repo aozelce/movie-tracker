@@ -4,8 +4,8 @@
 <html>
 <c:set var="pageTitle" value="My Recommendations"/>
 <jsp:include page="/head.jsp"/>
-
 <body>
+<main>
 <jsp:include page="/nav.jsp"/>
 <div class="container">
     <h2>My Recommendations</h2>
@@ -101,6 +101,7 @@
                 });
             });
             </script>
+</main>
 <jsp:include page="/footer.jsp"/>
 </body>
 </html>
