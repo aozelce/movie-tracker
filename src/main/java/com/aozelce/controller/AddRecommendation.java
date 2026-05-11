@@ -1,33 +1,45 @@
 package com.aozelce.controller;
 
 import com.aozelce.auth.AuthRedirector;
+import com.aozelce.auth.UserSessionHelper;
+import com.aozelce.entity.Media;
+import com.aozelce.entity.Source;
 import com.aozelce.entity.User;
 import com.aozelce.persistence.GenericDao;
 import com.aozelce.persistence.TmdbDao;
+import com.aozelce.service.MediaService;
+import com.aozelce.service.RecommendationService;
 import com.aozelce.service.TmdbGenreService;
 import com.themoviedb.Movie;
 import com.themoviedb.ResultsItem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import com.aozelce.entity.Media;
-import com.aozelce.entity.Recommendation;
 import java.util.List;
-import com.aozelce.entity.Source;
-import com.aozelce.auth.UserSessionHelper;
-
 
 
 /**
- * Servlet responsible for handling recommendation addition flows.
- * 
- * Two separate workflows:
- * 1. TMDB Search Path: Search TMDB -> Select Result -> Confirm & Add
- * 2. Manual Path: Directly add movie not found in TMDB
+ * Servlet that handles the two recommendation-addition workflows: the TMDB
+ * search path (search -> select -> confirm -> save) and the manual path (fill
+ * form -> save).
+ * <p>
+ * All endpoints require an authenticated session. Unauthenticated requests are
+ * redirected by AuthRedirector.
+ * <p>
+ * GET actions (via "page" parameter): tmdb-search - renders the TMDB search
+ * form (default) manual -renders the manual entry form
+ * <p>
+ * POST actions (via "action" parameter): search-tmdb - runs a TMDB title search
+ * and shows results select-tmdb - processes a selected result; shows
+ * confirmation on first pass, saves the recommendation on final submit
+ * add-manual - validates and persists a manually entered recommendation
  *
  * @author aozelce
  */
@@ -35,84 +47,76 @@ import com.aozelce.auth.UserSessionHelper;
 public class AddRecommendation extends HttpServlet {
 
     private final Logger logger = LogManager.getLogger(this.getClass());
+    private final MediaService mediaService = new MediaService(this);
+    private final RecommendationService recommendationService = new RecommendationService(this);
 
     private TmdbDao tmdbDao;
     private TmdbGenreService tmdbGenreService;
 
+    /**
+     * Loads servlet-scoped dependencies from the ServletContext.
+     * Both TmdbDao and TmdbGenreService must be placed in application scope
+     * before the first request arrives (e.g., by a context listener).
+     *
+     * @throws ServletException if the superclass init() fails
+     */
     public void init() throws ServletException {
-        // Retrieve the movie service from the app scope
         tmdbDao = (TmdbDao) getServletContext().getAttribute("tmdbDao");
-        // Retrieve the genre service from the app scope
-        tmdbGenreService = (TmdbGenreService) getServletContext().getAttribute(
-                "genreService");
+        tmdbGenreService = (TmdbGenreService) getServletContext().getAttribute("genreService");
     }
 
     /**
-     * Handles GET requests to display recommendation entry pages.
-     * Query parameters:
-     *   - page: "tmdb-search" (search TMDB), "manual" (manual entry)
+     * Renders the recommendation entry page selected by the "page" query parameter.
+     * Defaults to the TMDB search page if the parameter is absent.
+     * Returns 400 for unknown values and 500 if an unexpected error occurs.
      *
-     * @param request  the HTTP request object
-     * @param response the HTTP response object
-     * @throws ServletException if a servlet-specific error occurs
+     * @param request  the HTTP request; must carry a valid user session
+     * @param response the HTTP response
+     * @throws ServletException if forwarding fails
      * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // Check if the user is authenticated. If not, the method handles redirection and returns false.
         if (!AuthRedirector.redirectIfUnauthenticated(request, response)) {
-            return; // Exit if the user is not authenticated (redirected already)
+            return;
         }
 
         String page = request.getParameter("page");
+
+        // Defaults to the TMDB search page if the parameter is absent or unrecognized.
         if (page == null || page.isEmpty()) {
             page = "tmdb-search";
         }
 
-        // The 'page' parameter determines which add recommendation flow the user wants:
-        // This switch statement routes the request to the correct JSP based on the page parameter.
-        // If the parameter is missing or unrecognized, it defaults to TMDB search or returns a 400 error.
-        // This logic ensures the servlet can flexibly serve different UI pages and handle errors gracefully.
-        // The try-catch ensures any error in routing is logged and the user is forwarded to a friendly error page.
-        try {
-            switch (page) {
-                case "tmdb-search":
-                    showTmdbSearchPage(request, response);
-                    break;
-                case "manual":
-                    showManualPage(request, response);
-                    break;
-                default:
-                    logger.warn("Unknown page: {}", page);
-                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unknown page");
-            }
-        } catch (Exception e) {
-            logger.error("Error displaying recommendation page", e);
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error: " + e.getMessage());
+        // Route to the appropriate page based on the 'page' query parameter.
+        if ("manual".equals(page)) {
+            showManualPage(request, response);
+        } else {
+            showTmdbSearchPage(request, response);
         }
     }
 
     /**
-     * Handles POST requests for creating recommendations.
-     * Parameters:
-     *   - action: "search-tmdb", "select-tmdb", or "add-manual"
+     * Processes the recommendation creation step identified by the "action" parameter.
+     * Returns 400 for missing or unknown actions and 500 if an unexpected error occurs.
      *
-     * @param request  the HTTP request object
-     * @param response the HTTP response object
-     * @throws ServletException if a servlet-specific error occurs
+     * @param request  the HTTP request; must carry a valid user session
+     * @param response the HTTP response
+     * @throws ServletException if forwarding fails
      * @throws IOException      if an I/O error occurs
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // Check if the user is authenticated. If not, the method handles redirection and returns false.
         if (!AuthRedirector.redirectIfUnauthenticated(request, response)) {
-            return; // Exit if the user is not authenticated (redirected already)
+            return;
         }
 
+        // Determine which recommendation workflow step to execute based on
+        // the 'action' parameter.
         String action = request.getParameter("action");
 
         try {
@@ -137,7 +141,7 @@ public class AddRecommendation extends HttpServlet {
     }
 
     /**
-     * Displays the TMDB search page.
+     * Forwards to the TMDB search form JSP.
      */
     private void showTmdbSearchPage(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -146,69 +150,107 @@ public class AddRecommendation extends HttpServlet {
     }
 
     /**
-     * Displays the manual entry page.
+     * Forwards to the manual entry form JSP.
      */
     private void showManualPage(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        // Get logged-in user from session
+        User user = UserSessionHelper.getUserFromSession(request);
+
+        if (user != null) {
+            // Fetch sources associated with this user
+            List<Source> sources = user.getSources();
+            request.setAttribute("sources", sources);
+        }
         RequestDispatcher dispatcher = request.getRequestDispatcher("/addManually.jsp");
         dispatcher.forward(request, response);
     }
 
     /**
-     * Handles TMDB search action.
-     * POST parameters:
-     *   query: search query for TMDB
+     * Queries TMDB with the submitted title and forwards enriched results to searchResults.jsp.
      */
     private void handleTmdbSearch(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
         String query = request.getParameter("query");
+
         if (query == null || query.trim().isEmpty()) {
-            throw new IllegalArgumentException("Search query is required");
+            logger.warn("Search submitted with empty query");
+            request.setAttribute("message", "Please enter a movie or TV show title.");
+            request.getRequestDispatcher("/searchTmdb.jsp").forward(request, response);
+            return;
         }
+
         query = query.trim();
+
         Movie movieResults = tmdbDao.searchMovie(query);
         request.setAttribute("searchQuery", query);
+
         if (movieResults == null || movieResults.getResults() == null || movieResults.getResults().isEmpty()) {
-            request.setAttribute("message", "No results found for: " + query);
+            showManualPage(request, response);
+            return;
+
         } else {
-            // Map genre IDs to names for each result using dynamic TMDB API
             for (ResultsItem result : movieResults.getResults()) {
                 String genreNames = tmdbGenreService.getGenreNames(result.getGenreIds());
                 result.setGenres(genreNames);
             }
             request.setAttribute("results", movieResults.getResults());
-            // Store results in session for later use
             request.getSession().setAttribute("tmdbResults", movieResults.getResults());
-
-
         }
+
         RequestDispatcher dispatcher = request.getRequestDispatcher("/searchResults.jsp");
         dispatcher.forward(request, response);
     }
 
     /**
-     * Handles TMDB result selection - either shows confirmation page or saves recommendation.
-     * POST parameters:
-     *   - tmdbId: TMDB ID of selected movie
-     *   - title: Movie title
-     *   - mediaType: Type (movie/tv)
-     *   - year: Release year
-     *   - posterPath: Poster URL
-     *   - overview: Description
-     *   - genres: Genres
-     *   - sourceName: Source (optional, when saving)
-     *   - notes: Notes (optional, when saving)
-     *   - isWatched: Already watched (optional, when saving)
+     * Handles TMDB result selection in two passes.
+     *
+     * Pass 1 - confirmation: when "sourceName" and "notes" are both absent, the selected
+     * item is looked up from the session cache and forwarded to confirmRecommendation.jsp.
+     *
+     * Pass 2 - final submit: when either "sourceName" or "notes" is present, the Media
+     * record is persisted (or reused if it already exists), the recommendation is saved,
+     * and the user is redirected to /recommendations.
+     *
+     * @param request  must contain "tmdbId"; requires a valid "tmdbResults" session attribute
+     * @param response the HTTP response
+     * @throws ServletException if forwarding fails
+     * @throws IOException      if an I/O error occurs
      */
     private void handleSelectTmdb(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Retrieve TMDB ID from request parameter
+
         String tmdbIdStr = request.getParameter("tmdbId");
-        int tmdbId = Integer.parseInt(tmdbIdStr);
+
+        // Validate tmdbId is present and numeric before parsing
+        if (tmdbIdStr == null || tmdbIdStr.trim().isEmpty()) {
+            logger.warn("select-tmdb action called with missing tmdbId");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing TMDB ID");
+            return;
+        }
+
+        int tmdbId;
+        try {
+            tmdbId = Integer.parseInt(tmdbIdStr);
+        } catch (NumberFormatException e) {
+            logger.warn("Invalid TMDB ID format: {}", tmdbIdStr);
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid TMDB ID");
+            return;
+        }
+
         logger.info("User selected/confirmed TMDB ID: {}", tmdbId);
-        // Retrieve results from session
+
+        // Guard against expired or missing session cache — user may have navigated directly
         List<ResultsItem> results = (List<ResultsItem>) request.getSession().getAttribute("tmdbResults");
-        // Find the selected result in the results list
+        if (results == null || results.isEmpty()) {
+            logger.warn("tmdbResults not found in session for tmdbId: {}", tmdbId);
+            request.setAttribute("message", "Session expired. Please search again.");
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/searchTmdb.jsp");
+            dispatcher.forward(request, response);
+            return;
+        }
+
         ResultsItem selected = null;
         for (ResultsItem item : results) {
             if (item.getId() == tmdbId) {
@@ -216,77 +258,70 @@ public class AddRecommendation extends HttpServlet {
                 break;
             }
         }
+
         if (selected == null) {
-            throw new RuntimeException("Selected TMDB item not found in session results");
+            logger.warn("TMDB ID {} not found in session results", tmdbId);
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Selected item not found. Please search again.");
+            return;
         }
 
-        // Check if this is the final submit (has sourceName/notes) or initial selection
         String sourceName = request.getParameter("sourceName");
         String notes = request.getParameter("notes");
 
-        // If sourceName or notes are present, this is a final submission - save the recommendation
         if (sourceName != null || notes != null) {
-            // Create or retrieve Media
-            Media media = createMediaFromRequest(selected);
+            // Pass 2: persist the media and recommendation, then redirect
+            Media media = mediaService.createMediaFromTmdbResult(selected);
             if (media == null) {
                 throw new RuntimeException("Failed to create Media from TMDB selection");
             }
-            // Check if media already exists in database
-            // This is to prevent duplicate media insertion into the db
-            GenericDao<Media> mediaDao = new GenericDao<>(Media.class);
-            List<Media> existingMedia = mediaDao.getByPropertyEqual("tmdbId", tmdbId);
-            if (existingMedia != null && !existingMedia.isEmpty()) {
-                media = existingMedia.get(0);
-            } else {
-                int mediaId = mediaDao.insert(media);
-                media.setId(mediaId);
-            }
-
-            // Retrieve user from session for recommendation creation
-            User user = UserSessionHelper.getUserFromSession(request);
-            // Create recommendation
-            createRecommendation(request, user, media);
-            // Redirect to recommendations list
+            media = mediaService.findOrCreateMedia(tmdbId, media);
+            recommendationService.createRecommendation(request, media);
             response.sendRedirect("recommendations");
             return;
         }
 
-       //
-        Media media = createMediaFromRequest(selected);
+        // Pass 1: build a transient Media object to pre-populate the confirmation form
+        Media media = mediaService.createMediaFromTmdbResult(selected);
         request.setAttribute("media", media);
+
+        // Load user's sources for the datalist
+        User user = UserSessionHelper.getUserFromSession(request);
+        if (user != null) {
+            request.setAttribute("sources", user.getSources());
+        }
+
 
         RequestDispatcher dispatcher = request.getRequestDispatcher("/confirmRecommendation.jsp");
         dispatcher.forward(request, response);
     }
 
+    private Media findOrCreateMedia(int tmdbId, Media media) {
+        return mediaService.findOrCreateMedia(tmdbId, media);
+    }
+
     /**
-     * Handles manual recommendation creation.
-     * POST parameters:
-     *   - title: Movie title (required)
-     *   - mediaType: Type (required)
-     *   - year: Release year (optional)
-     *   - overview: Description (optional)
-     *   - genres: Genres (optional)
-     *   - posterPath: Poster URL (optional)
-     *   - sourceName: Source/who recommended (optional)
-     *   - notes: Recommendation notes (optional)
-     *   - isWatched: Already watched (optional)
+     * Validates form input, builds and persists a Media record, then saves the recommendation.
+     * "title" and "mediaType" are required; all other fields are optional.
      */
     private void handleAddManual(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
         User user = UserSessionHelper.getUserFromSession(request);
 
         String title = request.getParameter("title");
         String mediaType = request.getParameter("mediaType");
 
         if (title == null || title.trim().isEmpty() || mediaType == null || mediaType.trim().isEmpty()) {
-            throw new IllegalArgumentException("Title and Media Type are required");
+            request.setAttribute("message", "Title and Media Type are required.");
+            request.getRequestDispatcher("/addManually.jsp").forward(request, response);
+            return;
         }
 
         logger.info("Creating manual recommendation: title={}, mediaType={}", title, mediaType);
 
         // Create Media entry
         Media media = new Media();
+        // Set properties
         media.setTitle(title.trim());
         media.setMediaType(mediaType.trim());
         // Assign a unique negative tmdbId for manual entries to avoid
@@ -295,7 +330,6 @@ public class AddRecommendation extends HttpServlet {
         // -unique-request-id-for-each-request-using-timemillis-method-in-servlet
         media.setTmdbId((int)(-1 * System.currentTimeMillis() / 1000));
 
-        // Optional fields
         String yearStr = request.getParameter("year");
         if (yearStr != null && !yearStr.isEmpty()) {
             try {
@@ -306,134 +340,14 @@ public class AddRecommendation extends HttpServlet {
         }
 
         media.setOverview(request.getParameter("overview"));
-        media.setGenres(request.getParameter("genres"));
         media.setPosterPath(request.getParameter("posterPath"));
+        media.setGenres(request.getParameter("genres"));
 
-        // Insert media
         GenericDao<Media> mediaDao = new GenericDao<>(Media.class);
         int mediaId = mediaDao.insert(media);
         media.setId(mediaId);
 
-        // Create recommendation
-        createRecommendation(request, user, media);
-
-        // Redirect to recommendations list
+        recommendationService.createRecommendation(request, media);
         response.sendRedirect("recommendations");
     }
-
-    /**
-     * Creates a Media object from request parameters.
-     *
-     *
-     * @param selected the selected ResultsItem from TMDB search (contains TMDB data)
-     * @return the created Media object
-     */
-    private Media createMediaFromRequest(ResultsItem selected) {
-
-        try {
-            int tmdbId = selected.getId();
-            String title = selected.getTitle();
-            if (title == null || title.trim().isEmpty()) {
-                title = selected.getName();
-            }
-            if (title == null || title.trim().isEmpty()) {
-                throw new IllegalArgumentException("TMDB result is missing a title and name");
-            }
-
-            String mediaType = selected.getMediaType();
-            String year = null;
-            String posterPath = selected.getPosterPath();
-            String overview = selected.getOverview();
-            String genres = selected.getGenres();
-
-            Media media = new Media();
-            media.setTmdbId(tmdbId);
-            media.setTitle(title.trim());
-            media.setMediaType(mediaType);
-            media.setPosterPath(posterPath);
-            media.setOverview(overview);
-            media.setGenres(genres);
-
-            // Extract year from release date or first air date based on media type
-            String releaseDate = selected.getReleaseDate(); // get from ResultsItem for Movie
-            String firstAirDate = selected.getFirstAirDate(); // get from ResultsItem for TV
-
-
-            if ("movie".equalsIgnoreCase(mediaType) && releaseDate != null && releaseDate.length() >= 4) {
-                year = releaseDate.substring(0, 4);
-            } else if ("tv".equalsIgnoreCase(mediaType) && firstAirDate != null && firstAirDate.length() >= 4) {
-                year = firstAirDate.substring(0, 4);
-            }
-            if (year != null) {
-                media.setYear(Integer.parseInt(year));
-            }
-
-            return media; // Return the created Media object
-
-        } catch (Exception e) {
-            logger.error("Error creating Media", e);
-            return null;
-        }
-    }
-
-    /**
-     * Helper method to create a Recommendation entity and persist it.
-     *
-     * @param request the HTTP request containing recommendation details
-     * @param user the user who is creating the recommendation
-     * @param media the media object for the recommendation
-     */
-    private void createRecommendation(HttpServletRequest request, User user, Media media) {
-        try {
-            Recommendation recommendation = new Recommendation();
-            recommendation.setUser(user);
-            recommendation.setMedia(media);
-
-            // Optional source - handles text input for new source creation
-            String sourceName = request.getParameter("sourceName");
-            if (sourceName != null && !sourceName.trim().isEmpty()) {
-                sourceName = sourceName.trim();
-                GenericDao<Source> sourceDao = new GenericDao<>(Source.class);
-                
-                // Try to find existing source with this name for the user
-                List<Source> existingSources = sourceDao.getByPropertyEqual("name", sourceName);
-                Source source = null;
-                
-                if (existingSources != null && !existingSources.isEmpty()) {
-                    // Use existing source
-                    source = existingSources.get(0);
-                    logger.info("Using existing source: {}", sourceName);
-                } else {
-                    // Create new source for this user
-                    source = new Source();
-                    source.setUser(user);
-                    source.setName(sourceName);
-                    int sourceId = sourceDao.insert(source);
-                    source.setId(sourceId);
-                    logger.info("Created new source: {} for user: {}", sourceName, user.getId());
-                }
-                
-                recommendation.setSource(source);
-            }
-
-            // Optional notes
-            String notes = request.getParameter("notes");
-            if (notes != null && !notes.isEmpty()) {
-                recommendation.setNotes(notes.trim());
-            }
-
-            // Optional watched status
-            String isWatched = request.getParameter("isWatched");
-            recommendation.setWatched("on".equals(isWatched));
-
-            // Save recommendation
-            GenericDao<Recommendation> recDao = new GenericDao<>(Recommendation.class);
-            recDao.insert(recommendation);
-            
-        } catch (Exception e) {
-            logger.error("Error creating recommendation", e);
-            throw new RuntimeException("Failed to create recommendation", e);
-        }
-    }
 }
-

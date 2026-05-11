@@ -1,4 +1,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
 <!DOCTYPE html>
 <html>
@@ -20,7 +21,9 @@
 
             <c:if test="${not empty searchQuery}">
                 <p class="alert alert-warning">
-                    <strong>Search didn't find "${searchQuery}" in TMDB?</strong> No problem! Add it manually below.
+                    <strong>We couldn't find "${searchQuery}" in TMDB.</strong>
+                    <br> But don’t worry! You can add it manually using the
+                    form below.
                 </p>
             </c:if>
 
@@ -33,15 +36,13 @@
 
                     <div class="mb-3">
                         <label for="title" class="form-label">Movie/Show Title <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="title" name="title" required
-                               placeholder="e.g., The Matrix"
-                               <c:if test="${not empty searchQuery}">value="${searchQuery}"</c:if>
-                               >
+                        <input type="text" class="form-control" id="title" name="title"
+                               placeholder="e.g., The Matrix">
                     </div>
 
                     <div class="mb-3">
                         <label for="mediaType" class="form-label">Type <span class="text-danger">*</span></label>
-                        <select class="form-select" id="mediaType" name="mediaType" required>
+                        <select class="form-select" id="mediaType" name="mediaType">
                             <option value="">-- Select Type --</option>
                             <option value="movie">Movie</option>
                             <option value="tv">TV Show</option>
@@ -88,6 +89,7 @@
                         <input type="text" class="form-control" id="sourceName" name="sourceName"
                                placeholder="e.g., Friend, Movie Review, Reddit, etc."
                                list="existingSources">
+                        <%-- Display the existing sources of the User--%>
                         <datalist id="existingSources">
                             <c:forEach var="source" items="${sources}">
                                 <option value="${source.name}"></option>
