@@ -18,6 +18,16 @@
       <error-code>401</error-code>
       <location>/error.jsp</location>
   </error-page>
+    <!-- 403 Forbidden - Server understood request but refuses to authorize -->
+    <error-page>
+        <error-code>403</error-code>
+        <location>/error.jsp</location>
+    </error-page>
+    <!-- 404 Not Found - Resource not found -->
+    <error-page>
+        <error-code>404</error-code>
+        <location>/error.jsp</location>
+    </error-page>
   <!-- Redirect 500 Internal Server Error to the error.jsp page -->
   <error-page>
       <error-code>500</error-code>
