@@ -72,7 +72,8 @@ public class TmdbDao {
                     .path("search")
                     .path("multi")
                     .queryParam("api_key", apiKey)
-                    .queryParam("query", searchQuery);
+                    .queryParam("query", searchQuery)
+                    .queryParam("language", "en-US");
 
             // Execute the GET request and retrieve response as JSON string
             String response = target.request(MediaType.APPLICATION_JSON).get(String.class);
