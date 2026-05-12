@@ -192,6 +192,8 @@ public class AddRecommendation extends HttpServlet {
 
         } else {
             for (ResultsItem result : movieResults.getResults()) {
+                // Fetch genre names from the GenreIds and set the genres
+                // property for display in the JSP
                 String genreNames = tmdbGenreService.getGenreNames(result.getGenreIds());
                 result.setGenres(genreNames);
             }
@@ -230,6 +232,7 @@ public class AddRecommendation extends HttpServlet {
             return;
         }
 
+        // Parse tmdbId and handle invalid formats
         int tmdbId;
         try {
             tmdbId = Integer.parseInt(tmdbIdStr);
@@ -239,6 +242,7 @@ public class AddRecommendation extends HttpServlet {
             return;
         }
 
+        // Log the selected TMDB ID for debugging
         logger.info("User selected/confirmed TMDB ID: {}", tmdbId);
 
         // Guard against expired or missing session cache — user may have navigated directly
@@ -251,6 +255,8 @@ public class AddRecommendation extends HttpServlet {
             return;
         }
 
+        // Find the selected TMDB result out of all in the session cache
+        // Since the search returns many results
         ResultsItem selected = null;
         for (ResultsItem item : results) {
             if (item.getId() == tmdbId) {
@@ -259,14 +265,15 @@ public class AddRecommendation extends HttpServlet {
             }
         }
 
+        // Handle case where the selected TMDB ID is not found in the session cache
         if (selected == null) {
             logger.warn("TMDB ID {} not found in session results", tmdbId);
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Selected item not found. Please search again.");
             return;
         }
 
+        // Check if the user confirmed the selection
         String confirmed = request.getParameter("confirmed");
-
         if ("true".equals(confirmed)) {
             // Pass 2: persist the media and recommendation, then redirect to
             // the  recommendations page
@@ -291,6 +298,7 @@ public class AddRecommendation extends HttpServlet {
             request.setAttribute("sources", user.getSources());
         }
 
+        // Forward to the confirmation page
         RequestDispatcher dispatcher = request.getRequestDispatcher("/confirmRecommendation.jsp");
         dispatcher.forward(request, response);
     }
@@ -341,7 +349,7 @@ public class AddRecommendation extends HttpServlet {
         GenericDao<Media> mediaDao = new GenericDao<>(Media.class);
         int mediaId = mediaDao.insert(media);
         media.setId(mediaId);
-
+        // Create a Recommendation entry with the media
         recommendationService.createRecommendation(request, media);
         response.sendRedirect("recommendations");
     }
