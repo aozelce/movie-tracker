@@ -17,6 +17,7 @@
 
             <form method="POST" action="${pageContext.request.contextPath}/addRecommendation">
                 <input type="hidden" name="action" value="select-tmdb">
+                <input type="hidden" name="confirmed" value="true">
 
                 <!-- Media Preview Section -->
                 <fieldset class="mb-4 p-3 bg-light rounded">

@@ -265,17 +265,18 @@ public class AddRecommendation extends HttpServlet {
             return;
         }
 
-        String sourceName = request.getParameter("sourceName");
-        String notes = request.getParameter("notes");
+        String confirmed = request.getParameter("confirmed");
 
-        if (sourceName != null || notes != null) {
-            // Pass 2: persist the media and recommendation, then redirect
+        if ("true".equals(confirmed)) {
+            // Pass 2: persist the media and recommendation, then redirect to
+            // the  recommendations page
             Media media = mediaService.createMediaFromTmdbResult(selected);
             if (media == null) {
                 throw new RuntimeException("Failed to create Media from TMDB selection");
             }
             media = mediaService.findOrCreateMedia(tmdbId, media);
             recommendationService.createRecommendation(request, media);
+            logger.info("Recommendation saved for tmdbId: {}", tmdbId);
             response.sendRedirect("recommendations");
             return;
         }
@@ -290,13 +291,8 @@ public class AddRecommendation extends HttpServlet {
             request.setAttribute("sources", user.getSources());
         }
 
-
         RequestDispatcher dispatcher = request.getRequestDispatcher("/confirmRecommendation.jsp");
         dispatcher.forward(request, response);
-    }
-
-    private Media findOrCreateMedia(int tmdbId, Media media) {
-        return mediaService.findOrCreateMedia(tmdbId, media);
     }
 
     /**
@@ -306,14 +302,13 @@ public class AddRecommendation extends HttpServlet {
     private void handleAddManual(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        User user = UserSessionHelper.getUserFromSession(request);
 
         String title = request.getParameter("title");
         String mediaType = request.getParameter("mediaType");
 
         if (title == null || title.trim().isEmpty() || mediaType == null || mediaType.trim().isEmpty()) {
             request.setAttribute("message", "Title and Media Type are required.");
-            request.getRequestDispatcher("/addManually.jsp").forward(request, response);
+            showManualPage(request, response);
             return;
         }
 
