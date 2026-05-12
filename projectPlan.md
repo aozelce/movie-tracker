@@ -91,14 +91,6 @@
 - [X] Set up AWS Cognito User Pool (configure pool, password policy, sign-in,
   app client)
 - [X] Add AWS SDK for Java dependency to `pom.xml`
-
-[//]: # (- [ ] Create `CognitoUtil` helper class &#40;`authenticateUser`, `registerUser`, `getUser`&#41;)
-
-[//]: # (- [ ] Create `AuthenticationFilter` &#40;implements `Filter`&#41;)
-
-[//]: # (- [ ] Map filter in `web.xml` to protect all pages except login)
-
-[//]: # (- [ ] Create session management utilities)
 - [X] Test authentication flow locally with Cognito
 - [X] Add logging for all authentication events
 - [X] **Submit Checkpoint 2 by 3/4**
@@ -196,10 +188,10 @@
 
 - [X] Create `EditRecommendationServlet`
 - [X] Create `DeleteRecommendationServlet`
-- [ ] Create `ToggleWatchedServlet`
+- [X] Create `ToggleWatchedServlet`
 
 - [X] Create `editRecommendation.jsp` (US-010)
-- [ ] Polish individual project UI with Bootstrap
+- [X] Polish individual project UI with Bootstrap
 
 *Class: Asynchronous Messaging*
 
@@ -229,33 +221,27 @@
 
 ## Week 15 (5/4) — Work Week
 *Class: Work Week*
-- [ ] Clean up code formatting
-- [ ] Add JavaDoc comments to all public methods
-- [ ] Update README with latest info
+- [X] Clean up code formatting
+- [X] Add JavaDoc comments to all public methods
+- [X] Update README with latest info
 
-- [ ] Finish implementing peer review feedback
-- [ ] Write comprehensive `README.md` (description, tech stack, user stories, setup, deployment, screenshots, deployed link)
-- [ ] Create JavaDoc for all public methods
-- [ ] Add inline comments where needed
-- [ ] Create `USER_GUIDE.md` (register/login, add recommendations, sources, filtering)
-- [ ] Final code quality check (no `System.out.println`, consistent formatting, 70%+ test coverage)
-- [ ] Run all tests one final time
-- [ ] Deploy final version to AWS
-- [ ] Test production deployment thoroughly
-- [ ] Weekly reflection/time log
+- [X] Finish implementing peer review feedback
+- [X] Write comprehensive `README.md` (description, tech stack, user stories,
+  setup, deployment, screenshots, deployed link)
+- [X] Create JavaDoc for all public methods
+- [X] Add inline comments where needed
+- [X] Final code quality check (no `System.out.println`, consistent 
+  formatting, 70%+ test coverage)
+- [X] Run all tests one final time
 
 ---
 
 ## Week 16 (5/11) — Individual Project Presentations
 *Class: Individual Project Presentations | **PROJECT DUE 5/13, 9 p.m.***
 
-- [ ] Create presentation slides (problem statement, tech, ERD, demo, challenges, learnings)
-- [ ] Practice presentation (5–7 minutes)
-- [ ] Create video demonstration (screen recording with voiceover, all 10 MVP features)
-- [ ] Upload video to YouTube (unlisted) and add link to `README.md`
-- [ ] Final testing in production (all 10 user stories, auth, CRUD, mobile)
-- [ ] Final documentation review (proofread, verify links, update outdated info)
-- [ ] Final commit and push to GitHub
-- [ ] Verify all Checkpoint requirements met
-- [ ] **Submit project by 5/13, 9 p.m.**
-- [ ] Weekly reflection/time log
+- [X] Create video demonstration (screen recording with voiceover, all 11 
+  MVP features)
+- [X] Upload video to YouTube (unlisted) and add link to `README.md`
+- [X] Final testing in production (all 11 user stories, auth, CRUD, mobile)
+- [X] Final commit and push to GitHub
+- [X] Verify all Checkpoint requirements met
