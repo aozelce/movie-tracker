@@ -1,5 +1,6 @@
 package com.aozelce.persistence;
 
+import com.aozelce.service.TmdbMediaService;
 import com.themoviedb.Movie;
 import com.themoviedb.ResultsItem;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,15 +13,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 /**
- * Unit tests for the TmdbDao class, focusing on movie search functionality
+ * Unit tests for the TmdbMediaService class, focusing on movie search functionality
  * using TheMovieDB API.
  */
-class TmdbDaoTest {
+class TmdbMediaServiceTest {
 
     /**
      * The Dao.
      */
-    TmdbDao dao;
+    TmdbMediaService dao;
     /**
      * The Movie.
      */
@@ -38,8 +39,8 @@ class TmdbDaoTest {
         Properties properties = new Properties();
         // Load TMDB properties from the resource file
         properties.load(getClass().getResourceAsStream("/tmdb.properties"));
-        // Initialize the TmdbDao with the loaded properties
-        dao = new TmdbDao(properties);
+        // Initialize the TmdbMediaService with the loaded properties
+        dao = new TmdbMediaService(properties);
     }
 
     /**

@@ -1,6 +1,6 @@
 package com.aozelce.controller;
 
-import com.aozelce.persistence.TmdbDao;
+import com.aozelce.service.TmdbMediaService;
 import com.aozelce.util.PropertiesLoader;
 import com.aozelce.service.TmdbGenreService;
 import org.apache.logging.log4j.LogManager;
@@ -72,8 +72,8 @@ public class ApplicationStartup extends HttpServlet implements PropertiesLoader 
 
             context.setAttribute("properties", properties);
 
-            TmdbDao tmdbDao = new TmdbDao(properties);
-            context.setAttribute("tmdbDao", tmdbDao);
+            TmdbMediaService tmdbMediaService = new TmdbMediaService(properties);
+            context.setAttribute("tmdbMediaService", tmdbMediaService);
 
             // Create TmdbGenreService instance with loaded properties and store in application scope
             TmdbGenreService genreService = new TmdbGenreService(properties);

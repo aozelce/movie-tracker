@@ -1,4 +1,4 @@
-package com.aozelce.persistence;
+package com.aozelce.service;
 
 import java.util.List;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -19,7 +19,7 @@ import java.util.Properties;
  * The type Tmdb dao.
  * Responsible for making API calls to The Movie Database (TMDB).
  */
-public class TmdbDao {
+public class TmdbMediaService {
 
     // Logger instance for debugging and error tracking
     private final Logger logger = LogManager.getLogger(this.getClass());
@@ -29,14 +29,14 @@ public class TmdbDao {
     /**
      * Instantiates a new Tmdb dao.
      */
-    public TmdbDao() {};
+    public TmdbMediaService() {};
 
     /**
      * Instantiates a new Tmdb dao.
      *
      * @param properties the properties
      */
-    public TmdbDao(Properties properties) {
+    public TmdbMediaService(Properties properties) {
         this();
         this.properties = properties;
     };

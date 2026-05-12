@@ -79,7 +79,10 @@ public class TmdbGenreService {
         // If no genre IDs or fetch failed, return empty string
         if (genreIds == null || genreIds.isEmpty()) return "";
         // Map each genre ID to its name, skip nulls, and join with commas
+        // Reference: https://www.baeldung.com/java-maps-streams
         return genreIds.stream()
+                //For each element in the stream (each genre ID), call the
+                // get method on genreMap with that element as the argument.
                 .map(genreMap::get)
                 .filter(name -> name != null)
                 .collect(Collectors.joining(","));

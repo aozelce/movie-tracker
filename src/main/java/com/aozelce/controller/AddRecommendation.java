@@ -6,7 +6,7 @@ import com.aozelce.entity.Media;
 import com.aozelce.entity.Source;
 import com.aozelce.entity.User;
 import com.aozelce.persistence.GenericDao;
-import com.aozelce.persistence.TmdbDao;
+import com.aozelce.service.TmdbMediaService;
 import com.aozelce.service.MediaService;
 import com.aozelce.service.RecommendationService;
 import com.aozelce.service.TmdbGenreService;
@@ -50,18 +50,18 @@ public class AddRecommendation extends HttpServlet {
     private final MediaService mediaService = new MediaService(this);
     private final RecommendationService recommendationService = new RecommendationService(this);
 
-    private TmdbDao tmdbDao;
+    private TmdbMediaService tmdbMediaService;
     private TmdbGenreService tmdbGenreService;
 
     /**
      * Loads servlet-scoped dependencies from the ServletContext.
-     * Both TmdbDao and TmdbGenreService must be placed in application scope
+     * Both TmdbMediaService and TmdbGenreService must be placed in application scope
      * before the first request arrives (e.g., by a context listener).
      *
      * @throws ServletException if the superclass init() fails
      */
     public void init() throws ServletException {
-        tmdbDao = (TmdbDao) getServletContext().getAttribute("tmdbDao");
+        tmdbMediaService = (TmdbMediaService) getServletContext().getAttribute("tmdbMediaService");
         tmdbGenreService = (TmdbGenreService) getServletContext().getAttribute("genreService");
     }
 
@@ -183,7 +183,7 @@ public class AddRecommendation extends HttpServlet {
 
         query = query.trim();
 
-        Movie movieResults = tmdbDao.searchMovie(query);
+        Movie movieResults = tmdbMediaService.searchMovie(query);
         request.setAttribute("searchQuery", query);
 
         if (movieResults == null || movieResults.getResults() == null || movieResults.getResults().isEmpty()) {
