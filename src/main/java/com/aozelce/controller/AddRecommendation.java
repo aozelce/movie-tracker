@@ -225,7 +225,7 @@ public class AddRecommendation extends HttpServlet {
 
         String tmdbIdStr = request.getParameter("tmdbId");
 
-        // Validate tmdbId is present and numeric before parsing
+        // Validate tmdbId is present before parsing
         if (tmdbIdStr == null || tmdbIdStr.trim().isEmpty()) {
             logger.warn("select-tmdb action called with missing tmdbId");
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing TMDB ID");

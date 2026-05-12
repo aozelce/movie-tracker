@@ -25,6 +25,19 @@ public class EditRecommendation extends HttpServlet {
 
     private final Logger logger = LogManager.getLogger(this.getClass());
 
+    /**
+     * Handles GET requests to load the edit recommendation form.
+     *
+     * This method retrieves the authenticated user from the session and ensures the user is authorized
+     * to edit the specified recommendation. If the user is not authenticated or authorized, appropriate
+     * error responses are sent. The method fetches the recommendation and the user's sources from the
+     * database and forwards the data to the edit form JSP for rendering.
+     *
+     * @param request  the HttpServletRequest object containing the client's request
+     * @param response the HttpServletResponse object for sending the response
+     * @throws ServletException if an input or output error occurs while handling the request
+     * @throws IOException      if an input or output error is detected when the servlet handles the GET request
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -89,6 +102,18 @@ public class EditRecommendation extends HttpServlet {
         dispatcher.forward(request, response);
     }
 
+    /**
+     * Handles POST requests to update an existing recommendation.
+     *
+     * This method retrieves the authenticated user from the session and ensures the user is authorized
+     * to edit the specified recommendation. It processes the submitted form data, updates the recommendation
+     * in the database, and redirects the user to the recommendations list. If the user is not authenticated
+     * or authorized, appropriate error responses are sent.
+     *
+     * @param request  the HttpServletRequest object containing the client's request
+     * @param response the HttpServletResponse object for sending the response
+     * @throws IOException if an input or output error is detected when the servlet handles the POST request
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
