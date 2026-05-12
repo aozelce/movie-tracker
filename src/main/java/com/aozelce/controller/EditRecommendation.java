@@ -1,5 +1,6 @@
 package com.aozelce.controller;
 
+import com.aozelce.auth.AuthRedirector;
 import com.aozelce.entity.Recommendation;
 import com.aozelce.entity.Source;
 import com.aozelce.entity.User;
@@ -25,6 +26,7 @@ public class EditRecommendation extends HttpServlet {
 
     private final Logger logger = LogManager.getLogger(this.getClass());
 
+
     /**
      * Handles GET requests to load the edit recommendation form.
      *
@@ -41,51 +43,18 @@ public class EditRecommendation extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        // Get the existing session without creating a new one — avoids unnecessary session creation
+        // Redirect unauthenticated users and get the authenticated user from the session
         HttpSession session = request.getSession(false);
-        // Extract the authenticated user from the session, or null if no session exists
         User user = (session != null) ? (User) session.getAttribute("user") : null;
 
-        // Redirect unauthenticated users to the login page
-        if (user == null) {
-            response.sendRedirect("logIn");
-            return;
-        }
-
-        // Read the recommendation ID from the query string
-        String idParam = request.getParameter("id");
-        // Reject the request if the ID is missing or blank
-        if (idParam == null || idParam.trim().isEmpty()) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing recommendation ID");
-            return;
-        }
-
-        int recId;
-        try {
-            // Parse the ID — will throw if the value is not a valid integer
-            recId = Integer.parseInt(idParam);
-        } catch (NumberFormatException e) {
-            logger.warn("Invalid recommendation ID format: {}", idParam);
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid recommendation ID");
-            return;
-        }
-
-        // Fetch the recommendation from the database by its ID
-        GenericDao<Recommendation> recDao = new GenericDao<>(Recommendation.class);
-        Recommendation rec = recDao.getById(recId);
-
-        // Return 404 if no recommendation exists with that ID
-        if (rec == null) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Recommendation not found");
-            return;
-        }
+        Recommendation rec = getRecommendationFromRequest(request, response);
+        if (rec == null) return;
 
         // Ownership check — ensure the recommendation belongs to the authenticated user
         // Prevents one user from loading the edit form for another user's recommendation
         if (rec.getUser() == null || rec.getUser().getId() != user.getId()) {
             logger.warn("User {} attempted to access edit page for recommendation {} not owned by them",
-                    user.getId(), recId);
+                    user.getId(),rec.getId());
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "Not authorized to edit this recommendation");
             return;
         }
@@ -118,49 +87,16 @@ public class EditRecommendation extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
 
-        // Get the existing session without creating a new one
         HttpSession session = request.getSession(false);
-        // Extract the authenticated user from the session, or null if no session exists
         User user = (session != null) ? (User) session.getAttribute("user") : null;
 
-        // Redirect unauthenticated users to the login page
-        if (user == null) {
-            response.sendRedirect("logIn");
-            return;
-        }
-
-        // Read the recommendation ID submitted by the form
-        String idParam = request.getParameter("id");
-        // Reject the request if the ID is missing or blank
-        if (idParam == null || idParam.trim().isEmpty()) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing recommendation ID");
-            return;
-        }
-
-        int recId;
-        try {
-            // Parse the ID — will throw if the value is not a valid integer
-            recId = Integer.parseInt(idParam);
-        } catch (NumberFormatException e) {
-            logger.warn("Invalid recommendation ID format in POST: {}", idParam);
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid recommendation ID");
-            return;
-        }
-
-        // Fetch the recommendation from the database by its ID
-        GenericDao<Recommendation> recDao = new GenericDao<>(Recommendation.class);
-        Recommendation rec = recDao.getById(recId);
-
-        // Return 404 if no recommendation exists with that ID
-        if (rec == null) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Recommendation not found");
-            return;
-        }
+        Recommendation rec = getRecommendationFromRequest(request, response);
+        if (rec == null) return;
 
         // Ownership check — prevent users from editing recommendations that don't belong to them
         if (rec.getUser() == null || rec.getUser().getId() != user.getId()) {
             logger.warn("User {} attempted to edit recommendation {} not owned by them",
-                    user.getId(), recId);
+                    user.getId(), rec.getId());
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "Not authorized to edit this recommendation");
             return;
         }
@@ -203,8 +139,57 @@ public class EditRecommendation extends HttpServlet {
         }
 
         // Persist the updated recommendation and redirect to the list
+        GenericDao<Recommendation> recDao = new GenericDao<>(Recommendation.class);
         recDao.saveOrUpdate(rec);
-        logger.info("User {} updated recommendation {}", user.getId(), recId);
+        logger.info("User {} updated recommendation {}", user.getId(), rec.getId());
         response.sendRedirect("recommendations");
+    }
+
+
+    /**
+     * Helper method to retrieve a recommendation from the database based on
+     * the request parameters.
+     * <p>
+     * This method validates the recommendation ID provided in the request, fetches the
+     * corresponding recommendation from the database, and ensures it exists. If the ID
+     * is invalid or the recommendation is not found, appropriate error responses are sent.
+     *
+     * @param request  the HttpServletRequest object containing the client's request
+     * @param response the HttpServletResponse object for sending the response
+     * @return the Recommendation object if found, or null if an error occurs
+     * @throws IOException if an input or output error is detected when handling the request
+     */
+    private Recommendation getRecommendationFromRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        // Redirect unauthenticated users
+        if (!AuthRedirector.redirectIfUnauthenticated(request, response)) {
+            return null;
+        }
+
+        // Read the recommendation ID submitted by the form
+        String idParam = request.getParameter("id");
+        if (idParam == null || idParam.trim().isEmpty()) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing recommendation ID");
+            return null;
+        }
+        // Parse the ID to an integer
+        int recId;
+        try {
+            recId = Integer.parseInt(idParam);
+        } catch (NumberFormatException e) {
+            logger.warn("Invalid recommendation ID format: {}", idParam);
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid recommendation ID");
+            return null;
+        }
+
+        // Fetch the recommendation from the database
+        GenericDao<Recommendation> recDao = new GenericDao<>(Recommendation.class);
+        Recommendation rec = recDao.getById(recId);
+        // Verify the recommendation exists
+        if (rec == null) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Recommendation not found");
+            return null;
+        }
+        // Return the recommendation object for further processing
+        return rec;
     }
 }
