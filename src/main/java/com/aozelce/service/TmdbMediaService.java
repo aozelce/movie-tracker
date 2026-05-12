@@ -14,10 +14,10 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import java.util.Properties;
 
-
-/**
- * The type Tmdb dao.
- * Responsible for making API calls to The Movie Database (TMDB).
+/** * Service class for interacting with the TMDB (The Movie Database) API.
+ * * Provides functionality to search for movies or TV shows based on a query.
+ *
+ * @author aozelce
  */
 public class TmdbMediaService {
 
@@ -27,12 +27,12 @@ public class TmdbMediaService {
     private Properties properties;
 
     /**
-     * Instantiates a new Tmdb dao.
+     * Instantiates a new Tmdb media service.
      */
     public TmdbMediaService() {};
 
     /**
-     * Instantiates a new Tmdb dao.
+     * Instantiates a new Tmdb media service.
      *
      * @param properties the properties
      */
@@ -91,6 +91,7 @@ public class TmdbMediaService {
                         filtered.add(item);
                     }
                 }
+                // Set the filtered results back into the movie object
                 movie.setResults(filtered);
             }
 

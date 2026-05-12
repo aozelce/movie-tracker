@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
+import static com.aozelce.util.AuthUtils.getAuthenticatedUser;
+
 /**
  * Servlet that handles AJAX requests to toggle the 'watched' state of a
  * recommendation. Expects 'id' and 'watched' parameters in the POST request and
@@ -35,10 +37,8 @@ public class ToggleWatched extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        // Get the existing session without creating a new one
-        HttpSession session = request.getSession(false);
-        // Extract the authenticated user from the session, or null if no session exists
-        User user = (session != null) ? (User) session.getAttribute("user") : null;
+        // Get the authenticated user from the session
+        User user = getAuthenticatedUser (request, response);
 
         // Reject unauthenticated requests — return JSON since this is an AJAX endpoint
         if (user == null) {
