@@ -1,6 +1,5 @@
-package com.aozelce.persistence;
+package com.aozelce.service;
 
-import com.aozelce.service.TmdbMediaService;
 import com.themoviedb.Movie;
 import com.themoviedb.ResultsItem;
 import org.junit.jupiter.api.BeforeEach;
