@@ -18,6 +18,8 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 
+import static com.aozelce.util.AuthUtils.getAuthenticatedUser;
+
 /**
  * Servlet for editing recommendations.
  * <p>
@@ -49,10 +51,8 @@ public class EditRecommendation extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Redirect unauthenticated users and get the authenticated user from the session
-        HttpSession session = request.getSession(false);
-        User user = (session != null) ? (User) session.getAttribute("user") : null;
-
+        // Get the authenticated user from the session, redirect unauthenticated users
+        User user = getAuthenticatedUser(request, response);
         Recommendation rec = getRecommendationFromRequest(request, response);
         if (rec == null) return;
 
@@ -92,9 +92,8 @@ public class EditRecommendation extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
-
-        HttpSession session = request.getSession(false);
-        User user = (session != null) ? (User) session.getAttribute("user") : null;
+        // Get the authenticated user from the session, redirect unauthenticated users
+        User user = getAuthenticatedUser(request, response);
 
         Recommendation rec = getRecommendationFromRequest(request, response);
         if (rec == null) return;
