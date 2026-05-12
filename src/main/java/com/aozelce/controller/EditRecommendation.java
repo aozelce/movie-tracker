@@ -19,7 +19,13 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * The type Edit recommendation.
+ * Servlet for editing recommendations.
+ * <p>
+ * Handles GET requests to show the edit form for a recommendation and POST requests
+ * to update the recommendation. Only authenticated users can access this servlet,
+ * and users can only edit their own recommendations.
+ * </p>
+ * @author aozelce
  */
 @WebServlet("/editRecommendation")
 public class EditRecommendation extends HttpServlet {
