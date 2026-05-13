@@ -62,3 +62,15 @@
 | 5/12/26 | Added confirmation handling for recommendations with form updates                                                                                                  | 0.5   |       |
 | 5/12/26 | Adjusted servlet logic                                                                                                                                             | 0.5   |       |
 | 5/12/26 | Added additional logging                                                                                                                                           | 0.5   |       |
+| 5/12/26 | Added detailed Javadoc comments for EditRecommendation methods                                                                                      | 0.5   |       |
+| 5/12/26 | Renamed TmdbDao to TmdbMediaService with updated references, tests, and initialization logic                                                        | 1     |       |
+| 5/12/26 | Added language query parameter to TMDB search requests in TmdbDao                                                                                   | 0.5   |       |
+| 5/12/26 | Enhanced comments to clarify genre handling and session cache logic                                                                                 | 0.5   |       |
+| 5/12/26 | Added confirmation handling for recommendations with form updates                                                                                   | 0.5   |       |
+| 5/12/26 | Adjusted servlet logic                                                                                                                              | 0.5   |       |
+| 5/12/26 | Added additional logging                                                                                                                            | 0.5   |       |
+| 5/13/26 | Renamed test class to match updated TmdbMediaService package                                                                                         | 0.5   |       |
+| 5/13/26 | Refactored ToggleWatched to use AuthUtils for user retrieval; updated TmdbMediaService Javadoc and comments                                          | 0.5   |       |
+| 5/13/26 | Refactored EditRecommendation to use AuthUtils for authenticated user retrieval                                                                      | 0.5   |       |
+| 5/13/26 | Updated Javadoc in EditRecommendation                                                                                                               | 0.5   |       |
+| 5/13/26 | Refactored EditRecommendation to simplify session handling, add helper method for retrieving recommendations, and integrate AuthRedirector for unauthenticated redirects. | 1     |       |
