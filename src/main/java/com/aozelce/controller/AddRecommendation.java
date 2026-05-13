@@ -346,9 +346,9 @@ public class AddRecommendation extends HttpServlet {
         media.setPosterPath(request.getParameter("posterPath"));
         media.setGenres(request.getParameter("genres"));
 
-        GenericDao<Media> mediaDao = new GenericDao<>(Media.class);
-        int mediaId = mediaDao.insert(media);
-        media.setId(mediaId);
+        // Call the mediaService to create Media
+        mediaService.findOrCreateMedia(media.getTmdbId(), media);
+
         // Create a Recommendation entry with the media
         recommendationService.createRecommendation(request, media);
         response.sendRedirect("recommendations");
