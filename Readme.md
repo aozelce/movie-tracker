@@ -9,13 +9,13 @@ A web application that solves the problem of scattered movie and TV show recomme
 **Architecture**: Traditional Java web application
 - **Controllers**: Java Servlets
 - **Views**: JSP pages with JSTL
-- **Model**: POJOs with Hibernate annotations
+- **Model**: POJOs with Hibernate and Lombok annotations
 - **Data Access**: DAOs using Hibernate
 - **Build Tool**: Maven
 - **Database**: MySQL (local for dev, on EC2/Elastic Beanstalk for production)
 - **Testing**: JUnit 5 with test database
 
-**MVP**: 10 user stories (all marked with **[MVP]** below)
+**MVP**: 11 user stories (all marked with **[MVP]** below)
 
 **Database**: 4 one-to-many relationships
 
@@ -39,9 +39,10 @@ Users need a single source of truth for all their watch recommendations with the
 * **Security/Authentication**
    * AWS Cognito
    * Servlet filters for session management
+   * Server-side validation for user authentication and 
+     authorization
 * **Database**
    * MySQL 8.x (local for development, on EC2/Elastic Beanstalk for production)
-   * H2 (optional for testing)
 * **ORM Framework**
    * Hibernate 6.x
 * **Dependency Management**
@@ -51,7 +52,7 @@ Users need a single source of truth for all their watch recommendations with the
 * **CSS**
    * Bootstrap 5
 * **Data Validation**
-   * Hibernate Validator (Bean Validation API)
+   * Java back-end validation for all user inputs (registration, login, recommendation creation/editing)
    * Bootstrap form validation for front-end
 * **Logging**
    * Log4J2
@@ -66,7 +67,7 @@ Users need a single source of truth for all their watch recommendations with the
 * **Unit Testing**
    * JUnit 5 tests to cover all testable logic
    * Test with actual database (no mocking frameworks needed)
-   * Target: 70%+ code coverage
+   * Target: 100 code coverage
 * **IDE**
    * IntelliJ IDEA
 
