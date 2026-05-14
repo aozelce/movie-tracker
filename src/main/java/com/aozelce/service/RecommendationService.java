@@ -26,16 +26,7 @@ import java.util.List;
  */
 public class RecommendationService {
     private final Logger logger = LogManager.getLogger(this.getClass());
-    private final AddRecommendation addRecommendation;
 
-    /**
-     * Instantiates a new Recommendation service.
-     *
-     * @param addRecommendation the add recommendation
-     */
-    public RecommendationService(AddRecommendation addRecommendation) {
-        this.addRecommendation = addRecommendation;
-    }
 
     /**
      * Helper method to create a Recommendation entity and persist it.

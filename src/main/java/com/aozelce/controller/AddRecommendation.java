@@ -47,8 +47,9 @@ import java.util.List;
 public class AddRecommendation extends HttpServlet {
 
     private final Logger logger = LogManager.getLogger(this.getClass());
-    private final MediaService mediaService = new MediaService(this);
-    private final RecommendationService recommendationService = new RecommendationService(this);
+    private final MediaService mediaService = new MediaService();
+    private final RecommendationService recommendationService =
+            new RecommendationService();
 
     private TmdbMediaService tmdbMediaService;
     private TmdbGenreService tmdbGenreService;

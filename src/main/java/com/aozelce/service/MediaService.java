@@ -20,16 +20,6 @@ import java.util.List;
 public class MediaService {
 
     private final Logger logger = LogManager.getLogger(this.getClass());
-    private final AddRecommendation addRecommendation;
-
-    /**
-     * Instantiates a new Media service.
-     *
-     * @param addRecommendation the add recommendation
-     */
-    public MediaService(AddRecommendation addRecommendation) {
-        this.addRecommendation = addRecommendation;
-    }
 
     /**
      * Find or create media media.
