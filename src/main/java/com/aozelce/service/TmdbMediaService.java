@@ -93,6 +93,8 @@ public class TmdbMediaService {
                 }
                 // Set the filtered results back into the movie object
                 movie.setResults(filtered);
+                // Log the filtered results for debugging
+                logger.info("Filtered results: {}", filtered);
             }
 
             return movie;
