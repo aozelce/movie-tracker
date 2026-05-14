@@ -1,7 +1,7 @@
 package com.aozelce.service;
 
-import com.aozelce.auth.UserSessionHelper;
-import com.aozelce.controller.AddRecommendation;
+
+import com.aozelce.util.AuthUtils;
 import com.aozelce.entity.Media;
 import com.aozelce.entity.Recommendation;
 import com.aozelce.entity.Source;
@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -35,7 +36,12 @@ public class RecommendationService {
      * @param media   the media object for the recommendation
      */
     public void createRecommendation(HttpServletRequest request, Media media) {
-        User user = UserSessionHelper.getUserFromSession(request);
+        User user = null;
+        try {
+            user = AuthUtils.getAuthenticatedUser(request, null);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         try {
             Recommendation recommendation = new Recommendation();

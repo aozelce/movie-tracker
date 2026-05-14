@@ -1,6 +1,6 @@
 package com.aozelce.controller;
 
-import com.aozelce.auth.AuthRedirector;
+import com.aozelce.util.AuthUtils;
 import com.aozelce.entity.Recommendation;
 import com.aozelce.entity.Source;
 import com.aozelce.entity.User;
@@ -14,7 +14,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 
@@ -166,7 +165,8 @@ public class EditRecommendation extends HttpServlet {
      */
     private Recommendation getRecommendationFromRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // Redirect unauthenticated users
-        if (!AuthRedirector.redirectIfUnauthenticated(request, response)) {
+        User user = AuthUtils.getAuthenticatedUser(request, response);
+        if (user == null) {
             return null;
         }
 

@@ -1,15 +1,13 @@
 package com.aozelce.controller;
 
-import com.aozelce.auth.AuthRedirector;
-import com.aozelce.auth.UserSessionHelper;
+import com.aozelce.util.AuthUtils;
 import com.aozelce.entity.Media;
 import com.aozelce.entity.Source;
 import com.aozelce.entity.User;
-import com.aozelce.persistence.GenericDao;
-import com.aozelce.service.TmdbMediaService;
 import com.aozelce.service.MediaService;
 import com.aozelce.service.RecommendationService;
 import com.aozelce.service.TmdbGenreService;
+import com.aozelce.service.TmdbMediaService;
 import com.themoviedb.Movie;
 import com.themoviedb.ResultsItem;
 import org.apache.logging.log4j.LogManager;
@@ -31,7 +29,7 @@ import java.util.List;
  * form -> save).
  * <p>
  * All endpoints require an authenticated session. Unauthenticated requests are
- * redirected by AuthRedirector.
+ * redirected by AuthUtils
  * <p>
  * GET actions (via "page" parameter): tmdb-search - renders the TMDB search
  * form (default) manual -renders the manual entry form
@@ -80,7 +78,8 @@ public class AddRecommendation extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        if (!AuthRedirector.redirectIfUnauthenticated(request, response)) {
+        User user = AuthUtils.getAuthenticatedUser(request, response);
+        if (user == null) {
             return;
         }
 
@@ -112,7 +111,8 @@ public class AddRecommendation extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        if (!AuthRedirector.redirectIfUnauthenticated(request, response)) {
+        User user = AuthUtils.getAuthenticatedUser(request, response);
+        if (user == null) {
             return;
         }
 
@@ -156,7 +156,7 @@ public class AddRecommendation extends HttpServlet {
     private void showManualPage(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // Get logged-in user from session
-        User user = UserSessionHelper.getUserFromSession(request);
+        User user = AuthUtils.getAuthenticatedUser(request, response);
 
         if (user != null) {
             // Fetch sources associated with this user
@@ -294,7 +294,7 @@ public class AddRecommendation extends HttpServlet {
         request.setAttribute("media", media);
 
         // Load user's sources for the datalist
-        User user = UserSessionHelper.getUserFromSession(request);
+        User user = AuthUtils.getAuthenticatedUser(request, response);
         if (user != null) {
             request.setAttribute("sources", user.getSources());
         }
